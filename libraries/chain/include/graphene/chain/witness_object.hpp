@@ -40,9 +40,11 @@ namespace graphene { namespace chain {
          account_id_type  witness_account;
          uint64_t         last_aslot = 0;
          public_key_type  signing_key;
+         share_type       deposit_amount=0;
          optional< vesting_balance_id_type > pay_vb;
          vote_id_type     vote_id;
          uint64_t         total_votes = 0;
+         uint64_t         total_effect_votes = 0;
          string           url;
          int64_t          total_missed = 0;
          uint32_t         last_confirmed_block_num = 0;
@@ -74,9 +76,11 @@ FC_REFLECT_DERIVED( graphene::chain::witness_object, (graphene::db::object),
                     (witness_account)
                     (last_aslot)
                     (signing_key)
+                    (deposit_amount)
                     (pay_vb)
                     (vote_id)
                     (total_votes)
+                    (total_effect_votes)
                     (url) 
                     (total_missed)
                     (last_confirmed_block_num)

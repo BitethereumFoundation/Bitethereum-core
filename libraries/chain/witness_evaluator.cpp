@@ -32,7 +32,10 @@ namespace graphene { namespace chain {
 
 void_result witness_create_evaluator::do_evaluate( const witness_create_operation& op )
 { try {
-   FC_ASSERT(db().get(op.witness_account).is_lifetime_member());
+   auto const & d=db();
+   FC_ASSERT(d.get(op.witness_account).is_lifetime_member());
+   bool sufficient_balance=d.get_balance(op.witness_account,asset_id_type()).amount>=op.deposit_amount;
+   FC_ASSERT(sufficient_balance,"sufficient balance to deposit core asset for witness");
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
@@ -48,13 +51,20 @@ object_id_type witness_create_evaluator::do_apply( const witness_create_operatio
          obj.signing_key      = op.block_signing_key;
          obj.vote_id          = vote_id;
          obj.url              = op.url;
+         obj.deposit_amount   = op.deposit_amount;
    });
    return new_witness_object.id;
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
 void_result witness_update_evaluator::do_evaluate( const witness_update_operation& op )
 { try {
-   FC_ASSERT(db().get(op.witness).witness_account == op.witness_account);
+   auto const & d=db();
+   FC_ASSERT(d.get(op.witness).witness_account == op.witness_account);
+   const auto witness_obj=op.witness(d);
+   const auto old_deposit=witness_obj.deposit_amount;
+   bool sufficient_balance=old_deposit>=op.new_deposit_amount ? true:
+                           d.get_balance(op.witness_account,asset_id_type()).amount+old_deposit>=op.new_deposit_amount;
+   FC_ASSERT(sufficient_balance,"sufficient balance to deposit core asset for witness");
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
@@ -69,6 +79,7 @@ void_result witness_update_evaluator::do_apply( const witness_update_operation& 
             wit.url = *op.new_url;
          if( op.new_signing_key.valid() )
             wit.signing_key = *op.new_signing_key;
+         wit.deposit_amount=op.new_deposit_amount;
       });
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }

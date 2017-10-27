@@ -42,6 +42,7 @@ namespace graphene { namespace chain {
       account_id_type   witness_account;
       string            url;
       public_key_type   block_signing_key;
+      share_type        deposit_amount;
 
       account_id_type fee_payer()const { return witness_account; }
       void            validate()const;
@@ -63,6 +64,8 @@ namespace graphene { namespace chain {
       witness_id_type   witness;
       /// The account which owns the witness. This account pays the fee for this operation.
       account_id_type   witness_account;
+      //new deposit_amount;
+      share_type        new_deposit_amount;
       /// The new URL.
       optional< string > new_url;
       /// The new block signing key.
@@ -77,7 +80,7 @@ namespace graphene { namespace chain {
 } } // graphene::chain
 
 FC_REFLECT( graphene::chain::witness_create_operation::fee_parameters_type, (fee) )
-FC_REFLECT( graphene::chain::witness_create_operation, (fee)(witness_account)(url)(block_signing_key) )
+FC_REFLECT( graphene::chain::witness_create_operation, (fee)(witness_account)(url)(block_signing_key) (deposit_amount))
 
 FC_REFLECT( graphene::chain::witness_update_operation::fee_parameters_type, (fee) )
-FC_REFLECT( graphene::chain::witness_update_operation, (fee)(witness)(witness_account)(new_url)(new_signing_key) )
+FC_REFLECT( graphene::chain::witness_update_operation, (fee)(witness)(witness_account)(new_deposit_amount)(new_url)(new_signing_key) )
