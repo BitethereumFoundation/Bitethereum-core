@@ -1464,6 +1464,7 @@ public:
 
    signed_transaction create_witness(string owner_account,
                                      string url,
+                                     share_type deposit,
                                      bool broadcast /* = false */)
    { try {
       account_object witness_account = get_account(owner_account);
@@ -1476,6 +1477,7 @@ public:
       witness_create_op.witness_account = witness_account.id;
       witness_create_op.block_signing_key = witness_public_key;
       witness_create_op.url = url;
+      witness_create_op.deposit_amount=deposit;
 
       if (_remote_db->get_witness_by_account(witness_create_op.witness_account))
          FC_THROW("Account ${owner_account} is already a witness", ("owner_account", owner_account));
@@ -1492,6 +1494,7 @@ public:
 
    signed_transaction update_witness(string witness_name,
                                      string url,
+                                     share_type new_deposit,
                                      string block_signing_key,
                                      bool broadcast /* = false */)
    { try {
@@ -1506,6 +1509,7 @@ public:
          witness_update_op.new_url = url;
       if( block_signing_key != "" )
          witness_update_op.new_signing_key = public_key_type( block_signing_key );
+      witness_update_op.new_deposit_amount=new_deposit;
 
       signed_transaction tx;
       tx.operations.push_back( witness_update_op );
@@ -3281,9 +3285,10 @@ committee_member_object wallet_api::get_committee_member(string owner_account)
 
 signed_transaction wallet_api::create_witness(string owner_account,
                                               string url,
+                                              share_type deposit,
                                               bool broadcast /* = false */)
 {
-   return my->create_witness(owner_account, url, broadcast);
+   return my->create_witness(owner_account, url,deposit, broadcast);
 }
 
 signed_transaction wallet_api::create_worker(
@@ -3311,10 +3316,11 @@ signed_transaction wallet_api::update_worker_votes(
 signed_transaction wallet_api::update_witness(
    string witness_name,
    string url,
+   share_type new_deposit,
    string block_signing_key,
    bool broadcast /* = false */)
 {
-   return my->update_witness(witness_name, url, block_signing_key, broadcast);
+   return my->update_witness(witness_name, url,new_deposit, block_signing_key, broadcast);
 }
 
 vector< vesting_balance_object_with_info > wallet_api::get_vesting_balances( string account_name )
