@@ -827,7 +827,15 @@ void database::perform_chain_maintenance(const signed_block& next_block, const g
             {
                uint32_t offset = id.instance();
                // if they somehow managed to specify an illegal offset, ignore it.
-               if( offset < d._vote_tally_buffer.size() )
+               if( offset < d._vote_tally_buffer.size() ){
+                  if(id.type()==vote_id_type::vote_type::witness)
+                  {
+                     const auto &index=d.get_index_type<witness_index>().indices().get<by_vote_id>();
+                     auto itr=index.find(id);
+                     if(itr!=index.end())
+                        d._vote_tally_buffer[offset]=itr->get_effect_vote(voting_stake,d).value;
+                  }
+               }else
                   d._vote_tally_buffer[offset] += voting_stake;
             }
 

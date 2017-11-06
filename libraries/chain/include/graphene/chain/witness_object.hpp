@@ -25,11 +25,13 @@
 #include <graphene/chain/protocol/asset.hpp>
 #include <graphene/db/object.hpp>
 #include <graphene/db/generic_index.hpp>
+#include <graphene/chain/database.hpp>
 
 namespace graphene { namespace chain {
    using namespace graphene::db;
 
    class witness_object;
+   class database;
 
    class witness_object : public abstract_object<witness_object>
    {
@@ -50,6 +52,11 @@ namespace graphene { namespace chain {
          uint32_t         last_confirmed_block_num = 0;
 
          witness_object() : vote_id(vote_id_type::witness) {}
+      
+         share_type get_effect_vote(share_type vote_shares,database&_db)const {
+            const global_property_object & gpo = _db.get_global_properties();
+            return gpo.parameters.max_vote_effect_times*vote_shares;
+         }
    };
 
    struct by_account;
