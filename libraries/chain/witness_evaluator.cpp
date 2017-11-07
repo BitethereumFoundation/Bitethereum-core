@@ -42,11 +42,13 @@ void_result witness_create_evaluator::do_evaluate( const witness_create_operatio
 object_id_type witness_create_evaluator::do_apply( const witness_create_operation& op )
 { try {
    vote_id_type vote_id;
-   db().modify(db().get_global_properties(), [&vote_id](global_property_object& p) {
+   database &_db=db();
+   _db.modify(_db.get_global_properties(), [&vote_id](global_property_object& p) {
       vote_id = get_next_vote_id(p, vote_id_type::witness);
    });
-
-   const auto& new_witness_object = db().create<witness_object>( [&]( witness_object& obj ){
+   _db.adjust_balance(op.witness_account, -op.deposit_amount);
+   
+   const auto& new_witness_object = _db.create<witness_object>( [&]( witness_object& obj ){
          obj.witness_account  = op.witness_account;
          obj.signing_key      = op.block_signing_key;
          obj.vote_id          = vote_id;
@@ -62,6 +64,7 @@ void_result witness_update_evaluator::do_evaluate( const witness_update_operatio
    FC_ASSERT(d.get(op.witness).witness_account == op.witness_account);
    const auto witness_obj=op.witness(d);
    const auto old_deposit=witness_obj.deposit_amount;
+   delta_amount=asset(old_deposit-op.new_deposit_amount);
    bool sufficient_balance=old_deposit>=op.new_deposit_amount ? true:
                            d.get_balance(op.witness_account,asset_id_type()).amount+old_deposit>=op.new_deposit_amount;
    FC_ASSERT(sufficient_balance,"sufficient balance to deposit core asset for witness");
@@ -71,6 +74,7 @@ void_result witness_update_evaluator::do_evaluate( const witness_update_operatio
 void_result witness_update_evaluator::do_apply( const witness_update_operation& op )
 { try {
    database& _db = db();
+   _db.adjust_balance(op.witness_account, delta_amount);
    _db.modify(
       _db.get(op.witness),
       [&]( witness_object& wit )

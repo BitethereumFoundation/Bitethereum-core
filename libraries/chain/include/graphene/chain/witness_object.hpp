@@ -55,7 +55,16 @@ namespace graphene { namespace chain {
       
          share_type get_effect_vote(share_type vote_shares,database&_db)const {
             const global_property_object & gpo = _db.get_global_properties();
-            return gpo.parameters.max_vote_effect_times*vote_shares;
+            auto core_asset_obj=asset_id_type()(_db);
+            auto core_current_suply=core_asset_obj.dynamic_data(_db).current_supply.value;
+            //check overflow
+            uint64_t max_vote_effect;
+            if(deposit_amount.value>core_current_suply/gpo.parameters.max_vote_effect_times)
+               max_vote_effect=core_current_suply;
+            else
+               max_vote_effect=gpo.parameters.max_vote_effect_times*deposit_amount.value;
+            
+            return std::min(max_vote_effect,total_votes);
          }
    };
 

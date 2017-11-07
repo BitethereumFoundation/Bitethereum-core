@@ -197,7 +197,7 @@
       "scale": 10000
     },
     "block_interval": 3,
-    "maintenance_interval": 86400,
+    "maintenance_interval": 240,
     "maintenance_skip_slots": 3,
     "committee_proposal_review_period": 1209600,
     "maximum_transaction_size": 2048,
@@ -262,6 +262,111 @@
       "is_lifetime_member": true
     },{
       "name": "aaa",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w0",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w1",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w2",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w3",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w4",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w5",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w6",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w7",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w8",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w9",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w10",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w11",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w12",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w13",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w14",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w15",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w16",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w17",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w18",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w19",
+      "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
+      "is_lifetime_member": true
+    },{
+      "name": "w20",
       "owner_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
       "active_key": "CBK7DQXsgJBUpEsEnVU3iuhUFjLcvvofHdeSRngGcjzUdnW2tdZDH",
       "is_lifetime_member": true

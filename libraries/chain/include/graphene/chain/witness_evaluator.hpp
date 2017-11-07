@@ -41,6 +41,7 @@ namespace graphene { namespace chain {
       public:
          typedef witness_update_operation operation_type;
 
+         asset delta_amount;
          void_result do_evaluate( const witness_update_operation& o );
          void_result do_apply( const witness_update_operation& o );
    };

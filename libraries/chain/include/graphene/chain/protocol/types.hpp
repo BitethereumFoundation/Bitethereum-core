@@ -45,6 +45,7 @@
 #include <graphene/chain/protocol/address.hpp>
 #include <graphene/db/object_id.hpp>
 #include <graphene/chain/protocol/config.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
 
 namespace graphene { namespace chain {
    using namespace graphene::db;
@@ -239,6 +240,8 @@ namespace graphene { namespace chain {
    typedef fc::ecc::compact_signature                           signature_type;
    typedef safe<int64_t>                                        share_type;
    typedef uint16_t                                             weight_type;
+   //cannot reflect
+   //typedef safe< boost::multiprecision::uint128_t>              s_uint128;
 
    struct public_key_type
    {

@@ -187,6 +187,7 @@ void database::update_active_witnesses()
    {
       modify( wit, [&]( witness_object& obj ){
               obj.total_votes = _vote_tally_buffer[wit.vote_id];
+              obj.total_effect_votes=_witness_vote_tally_effect_buffer[wit.vote_id];
               });
    }
 
@@ -833,7 +834,10 @@ void database::perform_chain_maintenance(const signed_block& next_block, const g
                      const auto &index=d.get_index_type<witness_index>().indices().get<by_vote_id>();
                      auto itr=index.find(id);
                      if(itr!=index.end())
-                        d._vote_tally_buffer[offset]=itr->get_effect_vote(voting_stake,d).value;
+                     {
+                        d._vote_tally_buffer[offset]=voting_stake;
+                        d._witness_vote_tally_effect_buffer[offset]=itr->get_effect_vote(voting_stake,d).value;
+                     }
                   }
                }else
                   d._vote_tally_buffer[offset] += voting_stake;
