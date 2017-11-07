@@ -1286,7 +1286,7 @@ class wallet_api
        */
       signed_transaction create_witness(string owner_account,
                                         string url,
-                                        share_type deposit,
+                                        string deposit,
                                         bool broadcast = false);
 
       /**
@@ -1299,7 +1299,7 @@ class wallet_api
        */
       signed_transaction update_witness(string witness_name,
                                         string url,
-                                        share_type new_deposit,
+                                        string new_deposit,
                                         string block_signing_key,
                                         bool broadcast = false);
 
@@ -1554,7 +1554,7 @@ class wallet_api
       /**
        *  witness must deposit some core asset ,the effect vote for this witness is serval times to this deposit balance
        
-      signed_transaction witness_adjust_deposit_balance(share_type new_deposit);
+      signed_transaction witness_adjust_deposit_balance(string new_deposit);
        */
       std::map<string,std::function<string(fc::variant,const fc::variants&)>> get_result_formatters() const;
 

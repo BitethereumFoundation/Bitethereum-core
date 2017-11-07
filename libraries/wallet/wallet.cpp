@@ -1464,7 +1464,7 @@ public:
 
    signed_transaction create_witness(string owner_account,
                                      string url,
-                                     share_type deposit,
+                                     string deposit,
                                      bool broadcast /* = false */)
    { try {
       account_object witness_account = get_account(owner_account);
@@ -1472,12 +1472,13 @@ public:
       int witness_key_index = find_first_unused_derived_key_index(active_private_key);
       fc::ecc::private_key witness_private_key = derive_private_key(key_to_wif(active_private_key), witness_key_index);
       graphene::chain::public_key_type witness_public_key = witness_private_key.get_public_key();
+      fc::optional<asset_object> core_asset_obj = get_asset(asset_id_type());
 
       witness_create_operation witness_create_op;
       witness_create_op.witness_account = witness_account.id;
       witness_create_op.block_signing_key = witness_public_key;
       witness_create_op.url = url;
-      witness_create_op.deposit_amount=deposit;
+      witness_create_op.deposit_amount=core_asset_obj->amount_from_string(deposit);
 
       if (_remote_db->get_witness_by_account(witness_create_op.witness_account))
          FC_THROW("Account ${owner_account} is already a witness", ("owner_account", owner_account));
@@ -1494,13 +1495,15 @@ public:
 
    signed_transaction update_witness(string witness_name,
                                      string url,
-                                     share_type new_deposit,
+                                     string new_deposit,
                                      string block_signing_key,
                                      bool broadcast /* = false */)
    { try {
       witness_object witness = get_witness(witness_name);
       account_object witness_account = get_account( witness.witness_account );
       fc::ecc::private_key active_private_key = get_private_key_for_account(witness_account);
+
+      fc::optional<asset_object> core_asset_obj = get_asset(asset_id_type());
 
       witness_update_operation witness_update_op;
       witness_update_op.witness = witness.id;
@@ -1509,7 +1512,7 @@ public:
          witness_update_op.new_url = url;
       if( block_signing_key != "" )
          witness_update_op.new_signing_key = public_key_type( block_signing_key );
-      witness_update_op.new_deposit_amount=new_deposit;
+      witness_update_op.new_deposit_amount=core_asset_obj->amount_from_string(new_deposit);
 
       signed_transaction tx;
       tx.operations.push_back( witness_update_op );
@@ -3285,7 +3288,7 @@ committee_member_object wallet_api::get_committee_member(string owner_account)
 
 signed_transaction wallet_api::create_witness(string owner_account,
                                               string url,
-                                              share_type deposit,
+                                              string deposit,
                                               bool broadcast /* = false */)
 {
    return my->create_witness(owner_account, url,deposit, broadcast);
@@ -3316,7 +3319,7 @@ signed_transaction wallet_api::update_worker_votes(
 signed_transaction wallet_api::update_witness(
    string witness_name,
    string url,
-   share_type new_deposit,
+   string new_deposit,
    string block_signing_key,
    bool broadcast /* = false */)
 {
