@@ -1478,7 +1478,7 @@ public:
       witness_create_op.witness_account = witness_account.id;
       witness_create_op.block_signing_key = witness_public_key;
       witness_create_op.url = url;
-      witness_create_op.deposit_amount=core_asset_obj->amount_from_string(deposit);
+      witness_create_op.deposit_amount=core_asset_obj->amount_from_string(deposit).amount;
 
       if (_remote_db->get_witness_by_account(witness_create_op.witness_account))
          FC_THROW("Account ${owner_account} is already a witness", ("owner_account", owner_account));
@@ -1512,7 +1512,7 @@ public:
          witness_update_op.new_url = url;
       if( block_signing_key != "" )
          witness_update_op.new_signing_key = public_key_type( block_signing_key );
-      witness_update_op.new_deposit_amount=core_asset_obj->amount_from_string(new_deposit);
+      witness_update_op.new_deposit_amount=core_asset_obj->amount_from_string(new_deposit).amount;
 
       signed_transaction tx;
       tx.operations.push_back( witness_update_op );
