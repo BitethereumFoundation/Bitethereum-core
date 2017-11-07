@@ -3618,6 +3618,7 @@ namespace detail {
 
 vector< signed_transaction > wallet_api_impl::import_balance( string name_or_id, const vector<string>& wif_keys, bool broadcast )
 { try {
+
    FC_ASSERT(!is_locked());
    const dynamic_global_property_object& dpo = _remote_db->get_dynamic_global_properties();
    account_object claimer = get_account( name_or_id );
@@ -3652,6 +3653,8 @@ vector< signed_transaction > wallet_api_impl::import_balance( string name_or_id,
       }
       else
       {
+         public_key_type pubk=public_key_type(wif_to_key(wif_key)->get_public_key());
+         _keys[pubk]=wif_key;
          optional< private_key_type > key = wif_to_key( wif_key );
          FC_ASSERT( key.valid(), "Invalid private key" );
          fc::ecc::public_key pk = key->get_public_key();
@@ -3724,7 +3727,8 @@ vector< signed_transaction > wallet_api_impl::import_balance( string name_or_id,
       if( broadcast )
          _remote_net_broadcast->broadcast_transaction(signed_tx);
    }
-
+   
+   save_wallet_file();
    return result;
 } FC_CAPTURE_AND_RETHROW( (name_or_id) ) }
 
