@@ -157,6 +157,11 @@ void_result account_create_evaluator::do_evaluate( const account_create_operatio
       FC_ASSERT( current_account_itr == acnt_indx.indices().get<by_name>().end() );
    }
 
+   //check witneess and committemenmt vote num
+   bool right_witness_num=op.options.num_witness==vote_id_type::amount(op.options.votes,vote_id_type::witness);
+   bool right_committe_num=op.options.num_committee==vote_id_type::amount(op.options.votes,vote_id_type::committee);
+   
+   FC_ASSERT( right_witness_num&&right_committe_num, "witness_num or committe_num wrong" );
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
@@ -292,6 +297,12 @@ void_result account_update_evaluator::do_evaluate( const account_update_operatio
    if( o.new_options.valid() )
       verify_account_votes( d, *o.new_options );
 
+   //check witneess and committemenmt vote num
+   bool right_witness_num=o.new_options->num_witness==vote_id_type::amount(o.new_options->votes,vote_id_type::witness);
+   bool right_committe_num=o.new_options->num_committee==vote_id_type::amount(o.new_options->votes,vote_id_type::committee);
+   
+   FC_ASSERT( right_witness_num&&right_committe_num, "witness_num or committe_num wrong" );
+   
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (o) ) }
 
