@@ -886,16 +886,12 @@ void database::perform_chain_maintenance(const signed_block& next_block, const g
       tally_helper,
       fee_helper
       ));
-
-   struct clear_canary {
-      clear_canary(vector<uint64_t>& target): target(target){}
-      ~clear_canary() { target.clear(); }
-   private:
-      vector<uint64_t>& target;
-   };
-   clear_canary a(_witness_count_histogram_buffer),
-                b(_committee_count_histogram_buffer),
-                c(_vote_tally_buffer);
+   
+   clear_canary<vector<uint64_t>>   a(_witness_count_histogram_buffer),
+                                    b(_committee_count_histogram_buffer),
+                                    c(_vote_tally_buffer);
+   
+   clear_canary<map<uint32_t,uint64_t>>   d(_witness_vote_tally_effect_buffer);
 
    update_top_n_authorities(*this);
    update_active_witnesses();

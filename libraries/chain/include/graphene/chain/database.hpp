@@ -504,7 +504,15 @@ namespace graphene { namespace chain {
 
          node_property_object              _node_property_object;
    };
-
+   
+   template <typename Container>
+   struct clear_canary {
+      clear_canary(Container& target): target(target){}
+      ~clear_canary() { target.clear(); }
+   private:
+      Container& target;
+   };
+   
    namespace detail
    {
        template<int... Is>
