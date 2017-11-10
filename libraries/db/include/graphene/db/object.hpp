@@ -76,6 +76,9 @@ namespace graphene { namespace db {
          virtual variant            to_variant()const  = 0;
          virtual vector<char>       pack()const = 0;
          virtual fc::uint128        hash()const = 0;
+      
+         //template <typename T>
+         //bool is_type(){return T::space_id==id.space()&&T::type_id==id.type();}
    };
 
    /**

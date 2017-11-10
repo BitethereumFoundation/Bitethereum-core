@@ -47,7 +47,8 @@
 #include <graphene/chain/worker_object.hpp>
 
 namespace graphene { namespace chain {
-
+   
+using namespace graphene::db;
 template<class Index>
 vector<std::reference_wrapper<const typename Index::object_type>> database::sort_votable_objects(size_t count) const
 {
@@ -61,8 +62,20 @@ vector<std::reference_wrapper<const typename Index::object_type>> database::sort
                   [](const ObjectType& o) { return std::cref(o); });
    std::partial_sort(refs.begin(), refs.begin() + count, refs.end(),
                    [this](const ObjectType& a, const ObjectType& b)->bool {
-      share_type oa_vote = _vote_tally_buffer[a.vote_id];
-      share_type ob_vote = _vote_tally_buffer[b.vote_id];
+
+      share_type oa_vote ;
+      share_type ob_vote ;
+      if(a.id.space()==witness_object::space_id&&a.id.type()==witness_object::type_id)
+      //static_cast<object>(a).is_type<witness_object>();
+      {
+         oa_vote =_witness_vote_tally_effect_buffer.find(a.vote_id)->second;
+         ob_vote =_witness_vote_tally_effect_buffer.find(b.vote_id)->second;
+      }else
+      {
+         oa_vote = _vote_tally_buffer[a.vote_id];
+         ob_vote = _vote_tally_buffer[b.vote_id];
+      }
+      
       if( oa_vote != ob_vote )
          return oa_vote > ob_vote;
       return a.vote_id < b.vote_id;

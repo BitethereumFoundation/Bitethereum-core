@@ -114,6 +114,14 @@ struct blind_receipt
    stealth_confirmation            conf;
 };
 
+struct witness_vote_detail
+{
+   string name;
+   witness_id_type id;
+   share_type total_vote;
+   share_type effect_vote;
+};
+   
 struct by_from;
 struct by_to;
 struct by_to_asset_used;
@@ -1561,6 +1569,7 @@ class wallet_api
        
       signed_transaction witness_adjust_deposit_balance(string new_deposit);
        */
+      vector<witness_vote_detail> get_current_witnesses();
       std::map<string,std::function<string(fc::variant,const fc::variants&)>> get_result_formatters() const;
 
       fc::signal<void(bool)> lock_changed;
@@ -1627,6 +1636,8 @@ FC_REFLECT_DERIVED( graphene::wallet::vesting_balance_object_with_info, (graphen
 FC_REFLECT( graphene::wallet::operation_detail, 
             (memo)(description)(op) )
 
+FC_REFLECT(graphene::wallet::witness_vote_detail,(name)(id)(total_vote)(effect_vote))
+
 FC_API( graphene::wallet::wallet_api,
         (help)
         (gethelp)
@@ -1682,6 +1693,7 @@ FC_API( graphene::wallet::wallet_api,
         (whitelist_account)
         (create_committee_member)
         (get_witness)
+        (get_current_witnesses)
         (get_committee_member)
         (list_witnesses)
         (list_committee_members)

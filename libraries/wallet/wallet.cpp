@@ -1426,7 +1426,23 @@ public:
       }
       FC_CAPTURE_AND_RETHROW( (owner_account) )
    }
-
+   vector<witness_vote_detail> get_current_witnesses()
+   {
+      vector<witness_vote_detail> res;
+      for(const auto&witness_id: _remote_db->get_global_properties().active_witnesses)
+      {
+         std::vector<witness_id_type> ids_to_get;
+         ids_to_get.push_back(witness_id);
+         auto witness_obj=_remote_db->get_witnesses(ids_to_get)[0];
+         witness_vote_detail temp;
+         temp.name=get_account(witness_obj->witness_account).name;
+         temp.id=witness_obj->id;
+         temp.total_vote=witness_obj->total_votes;
+         temp.effect_vote=witness_obj->total_effect_votes;
+         res.push_back(temp);
+      }
+      return res;
+   }
    committee_member_object get_committee_member(string owner_account)
    {
       try
@@ -3315,7 +3331,10 @@ map<string,witness_id_type> wallet_api::list_witnesses(const string& lowerbound,
 {
    return my->_remote_db->lookup_witness_accounts(lowerbound, limit);
 }
-
+vector<witness_vote_detail> wallet_api::get_current_witnesses()
+{
+   return my->get_current_witnesses();
+}
 map<string,committee_member_id_type> wallet_api::list_committee_members(const string& lowerbound, uint32_t limit)
 {
    return my->_remote_db->lookup_committee_member_accounts(lowerbound, limit);
