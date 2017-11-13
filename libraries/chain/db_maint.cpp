@@ -68,8 +68,18 @@ vector<std::reference_wrapper<const typename Index::object_type>> database::sort
       if(a.id.space()==witness_object::space_id&&a.id.type()==witness_object::type_id)
       //static_cast<object>(a).is_type<witness_object>();
       {
-         oa_vote =_witness_vote_tally_effect_buffer.find(a.vote_id)->second;
-         ob_vote =_witness_vote_tally_effect_buffer.find(b.vote_id)->second;
+         auto itr_a=_witness_vote_tally_effect_buffer.find(a.vote_id);
+         if(itr_a!=_witness_vote_tally_effect_buffer.end())
+            oa_vote=itr_a->second;
+         else
+            oa_vote=0;
+         
+         auto itr_b=_witness_vote_tally_effect_buffer.find(b.vote_id);
+         if(itr_b!=_witness_vote_tally_effect_buffer.end())
+            ob_vote=itr_b->second;
+         else
+            ob_vote=0;
+
       }else
       {
          oa_vote = _vote_tally_buffer[a.vote_id];
@@ -238,11 +248,15 @@ void database::update_active_witnesses()
       {
          vote_counter vc;
          for( const witness_object& wit : wits )
-            vc.add( wit.witness_account, _vote_tally_buffer[wit.vote_id] );
+            vc.add( wit.witness_account, _witness_vote_tally_effect_buffer[wit.vote_id] );
          vc.finish( a.active );
       }
    } );
 
+   for(const witness_object& wit : wits){
+      const auto new_wit=find<witness_object>(wit.id);
+      std::cout<<fc::json::to_pretty_string(fc::variant(*new_wit))<<std::endl;
+   }
    modify(gpo, [&]( global_property_object& gp ){
       gp.active_witnesses.clear();
       gp.active_witnesses.reserve(wits.size());
