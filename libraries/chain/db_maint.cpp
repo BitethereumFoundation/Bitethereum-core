@@ -252,11 +252,6 @@ void database::update_active_witnesses()
          vc.finish( a.active );
       }
    } );
-
-   for(const witness_object& wit : wits){
-      const auto new_wit=find<witness_object>(wit.id);
-      std::cout<<fc::json::to_pretty_string(fc::variant(*new_wit))<<std::endl;
-   }
    modify(gpo, [&]( global_property_object& gp ){
       gp.active_witnesses.clear();
       gp.active_witnesses.reserve(wits.size());
