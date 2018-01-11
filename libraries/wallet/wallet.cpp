@@ -709,6 +709,8 @@ public:
 
    vector< signed_transaction > import_balance( string name_or_id, const vector<string>& wif_keys, bool broadcast );
 
+   signed_transaction import_airdrop_balance( string name_or_id, const string airdrop_address, const string signature, bool broadcast );
+
    bool load_wallet_file(string wallet_filename = "")
    {
       // TODO:  Merge imported wallet with existing wallet,
@@ -3688,6 +3690,11 @@ vector< signed_transaction > wallet_api::import_balance( string name_or_id, cons
 {
    return my->import_balance( name_or_id, wif_keys, broadcast );
 }
+    
+signed_transaction wallet_api::import_airdrop_balance( string name_or_id, const string airdrop_address, const string signature, bool broadcast )
+{
+    return my->import_airdrop_balance(name_or_id, airdrop_address, signature, broadcast);
+}
 
 namespace detail {
 
@@ -3805,6 +3812,36 @@ vector< signed_transaction > wallet_api_impl::import_balance( string name_or_id,
    
    save_wallet_file();
    return result;
+} FC_CAPTURE_AND_RETHROW( (name_or_id) ) }
+    
+    
+signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, const string airdrop_address, const string signature, bool broadcast )
+{ try {
+   
+    FC_ASSERT(!is_locked());
+    const dynamic_global_property_object& dpo = _remote_db->get_dynamic_global_properties();
+    account_object claimer = get_account( name_or_id );
+
+    signed_transaction tx;
+    
+    // 1. check if airdrop_address is exist in records
+    airdrop_balance_object bal = _remote_db->get_airdrop_balance_object( airdrop_address );
+    if(bal.owner_address != airdrop_address ) return tx;
+
+    // 2. check signature is valid
+    // TBD
+
+    airdrop_balance_claim_operation op;
+    op.deposit_to_account = claimer.id;
+    op.owner_address = bal.owner_address;
+    op.total_claimed = bal.balance;
+    op.balance_to_claim = bal.id;
+
+    tx.operations.push_back( op );
+    set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);
+    tx.validate();
+    
+    return sign_transaction( tx, broadcast );
 } FC_CAPTURE_AND_RETHROW( (name_or_id) ) }
 
 }

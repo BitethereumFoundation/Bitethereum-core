@@ -37,6 +37,12 @@ void balance_claim_operation::validate()const
    FC_ASSERT( fee == asset() );
    FC_ASSERT( balance_owner_key != public_key_type() );
 }
+    
+void airdrop_balance_claim_operation::validate()const
+{
+    FC_ASSERT( fee == asset() );
+    FC_ASSERT( owner_address != "" );
+}
 
 /**
  * @brief Used to validate operations in a polymorphic manner

@@ -32,6 +32,7 @@
 #include <graphene/chain/account_object.hpp>
 #include <graphene/chain/asset_object.hpp>
 #include <graphene/chain/balance_object.hpp>
+#include <graphene/chain/airdrop_balance_object.hpp>
 #include <graphene/chain/chain_property_object.hpp>
 #include <graphene/chain/committee_member_object.hpp>
 #include <graphene/chain/confidential_object.hpp>
@@ -302,6 +303,8 @@ class database_api
       vector<asset> get_vested_balances( const vector<balance_id_type>& objs )const;
 
       vector<vesting_balance_object> get_vesting_balances( account_id_type account_id )const;
+    
+      airdrop_balance_object get_airdrop_balance_object(const std::string& address) const;
 
       /**
        * @brief Get the total number of accounts registered with the blockchain
@@ -660,6 +663,7 @@ FC_API(graphene::app::database_api,
    (get_balance_objects)
    (get_vested_balances)
    (get_vesting_balances)
+   (get_airdrop_balance_object)
 
    // Assets
    (get_assets)

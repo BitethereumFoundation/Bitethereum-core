@@ -51,6 +51,7 @@
 #include <graphene/chain/asset_evaluator.hpp>
 #include <graphene/chain/assert_evaluator.hpp>
 #include <graphene/chain/balance_evaluator.hpp>
+#include <graphene/chain/airdrop_balance_evaluator.hpp>
 #include <graphene/chain/committee_member_evaluator.hpp>
 #include <graphene/chain/confidential_evaluator.hpp>
 #include <graphene/chain/custom_evaluator.hpp>
@@ -172,6 +173,7 @@ void database::initialize_evaluators()
    register_evaluator<transfer_from_blind_evaluator>();
    register_evaluator<blind_transfer_evaluator>();
    register_evaluator<asset_claim_fees_evaluator>();
+   register_evaluator<airdrop_balance_claim_evaluator>();
 }
 
 void database::initialize_indexes()
@@ -200,6 +202,7 @@ void database::initialize_indexes()
    add_index< primary_index<worker_index> >();
    add_index< primary_index<balance_index> >();
    add_index< primary_index<blinded_balance_index> >();
+   add_index< primary_index<airdrop_balance_index> >();
 
    //Implementation object indexes
    add_index< primary_index<transaction_index                             > >();
@@ -561,6 +564,23 @@ void database::init_genesis(const genesis_state_type& genesis_state)
 
       total_supplies[ asset_id ] += vest.amount;
    }
+    
+    // Create initial airdrop records
+    for(const genesis_state_type::initial_airdrop_type& rec : genesis_state.initial_airdrop_records)
+    {
+        const auto asset_id = get_asset_id(GRAPHENE_SYMBOL);
+        
+        create<airdrop_balance_object>([&](airdrop_balance_object& b) {
+            
+            b.asset_type = "eth"; //TBD
+            b.owner_address = rec.owner;
+            b.balance = asset(rec.amount, asset_id);
+            
+        });
+        
+        total_supplies[ asset_id_type(0) ] += rec.amount; // TBD
+    }
+    
 
    if( total_supplies[ asset_id_type(0) ] > 0 )
    {

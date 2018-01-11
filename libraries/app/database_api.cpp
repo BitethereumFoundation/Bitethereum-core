@@ -96,6 +96,8 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       vector<balance_object> get_balance_objects( const vector<address>& addrs )const;
       vector<asset> get_vested_balances( const vector<balance_id_type>& objs )const;
       vector<vesting_balance_object> get_vesting_balances( account_id_type account_id )const;
+      airdrop_balance_object get_airdrop_balance_object( const std::string& address )const;
+    
 
       // Assets
       vector<optional<asset_object>> get_assets(const vector<asset_id_type>& asset_ids)const;
@@ -876,6 +878,31 @@ vector<balance_object> database_api_impl::get_balance_objects( const vector<addr
       return result;
    }
    FC_CAPTURE_AND_RETHROW( (addrs) )
+}
+    
+
+airdrop_balance_object database_api::get_airdrop_balance_object( const std::string& address )const
+{
+    return my->get_airdrop_balance_object( address );
+}
+    
+airdrop_balance_object database_api_impl::get_airdrop_balance_object( const std::string& address )const
+{
+    try
+    {
+        const auto& airdrop_bal_idx = _db.get_index_type<airdrop_balance_index>();
+        const auto& by_owner_idx = airdrop_bal_idx.indices().get<by_owner_address>();
+        
+        airdrop_balance_object result;
+        
+        auto itr = by_owner_idx.find(address);
+        if( itr != by_owner_idx.end()) {
+            result = *itr;
+        }
+     
+        return result;
+    }
+    FC_CAPTURE_AND_RETHROW( (address) )
 }
 
 vector<asset> database_api::get_vested_balances( const vector<balance_id_type>& objs )const

@@ -51,9 +51,30 @@ namespace graphene { namespace chain {
          a.push_back( authority( 1, balance_owner_key, 1 ) );
       }
    };
+    
+    struct airdrop_balance_claim_operation : public base_operation
+    {
+        struct fee_parameters_type {};
+        
+        asset             fee;
+        account_id_type   deposit_to_account;
+        airdrop_balance_id_type        balance_to_claim;
+        string            owner_address;
+        asset             total_claimed;
+        
+        account_id_type fee_payer()const { return deposit_to_account; }
+        share_type      calculate_fee(const fee_parameters_type& )const { return 0; }
+        
+        void            validate()const;
+        
+    };
 
 } } // graphene::chain
 
 FC_REFLECT( graphene::chain::balance_claim_operation::fee_parameters_type,  )
 FC_REFLECT( graphene::chain::balance_claim_operation,
             (fee)(deposit_to_account)(balance_to_claim)(balance_owner_key)(total_claimed) )
+
+FC_REFLECT( graphene::chain::airdrop_balance_claim_operation::fee_parameters_type,  )
+FC_REFLECT( graphene::chain::airdrop_balance_claim_operation,
+           (fee)(deposit_to_account)(balance_to_claim)(owner_address)(total_claimed) )

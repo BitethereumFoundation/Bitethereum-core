@@ -379,6 +379,14 @@
       "amount": "1000000000000000"
     }
   ],
+  "initial_airdrop_records": [{
+      "owner": "0x66f8c45a918bb3252aee386ab79dd2dbda8c4d53",
+      "amount": "100"
+    },{
+      "owner": "0x7a116846f9022ba1983a9eaa28b1ee7010243438",
+      "amount": "50"
+    }
+  ],
   "initial_vesting_balances": [],
   "initial_active_witnesses": 7,
   "initial_witness_candidates": [{

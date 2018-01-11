@@ -676,7 +676,14 @@ class wallet_api
        * by wif_keys and deposit them into the given account.
        */
       vector< signed_transaction > import_balance( string account_name_or_id, const vector<string>& wif_keys, bool broadcast );
-
+    
+    
+      /**
+       * This call will construct transaction(s) that will claim all balances controled
+       * by airdrop-address and deposit them into the given account.
+      */
+      signed_transaction import_airdrop_balance( string account_name_or_id, const string airdrop_address, const string signature, bool broadcast );
+    
       /** Transforms a brain key to reduce the chance of errors when re-entering the key from memory.
        *
        * This takes a user-supplied brain key and normalizes it into the form used
@@ -1664,6 +1671,7 @@ FC_API( graphene::wallet::wallet_api,
         (import_accounts)
         (import_account_keys)
         (import_balance)
+        (import_airdrop_balance)
         (suggest_brain_key)
         (derive_owner_keys_from_brain_key)
         (register_account)
