@@ -26,18 +26,30 @@
 #include <fc/crypto/elliptic.hpp>
 #include <fc/crypto/base58.hpp>
 #include <algorithm>
+#include <fc/crypto/hex.hpp>
 
 namespace graphene {
   namespace chain {
    address::address(){}
 
-   address::address( const std::string& base58str )
+   address::address( const std::string& str,ConstructFromStringType _t )
    {
       std::string prefix( GRAPHENE_ADDRESS_PREFIX );
-      FC_ASSERT( is_valid( base58str, prefix ), "${str}", ("str",base58str) );
+      FC_ASSERT( is_valid( str, prefix ), "${str}", ("str",str) );
 
-      std::vector<char> v = fc::from_base58( base58str.substr( prefix.size() ) );
-      memcpy( (char*)addr._hash, v.data(), std::min<size_t>( v.size()-4, sizeof( addr ) ) );
+      std::vector<char> v ;
+      if(_t=FromBase58){
+         v= fc::from_base58(str.substr( prefix.size() ) );
+         memcpy( (char*)addr._hash, v.data(), std::min<size_t>( v.size()-4, sizeof( addr ) ) );
+      }
+      else if(_t==FromHex)
+      {
+         if(str.substr(0,2)=="0x")
+            fc::from_hex(str.substr(2,42 ),(char*)addr._hash, sizeof( addr ) );
+         else
+            fc::from_hex(str,(char*)addr._hash, sizeof( addr ) );
+      }
+
    }
 
    bool address::is_valid( const std::string& base58str, const std::string& prefix )

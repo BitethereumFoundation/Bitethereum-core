@@ -96,7 +96,7 @@ class database_api_impl : public std::enable_shared_from_this<database_api_impl>
       vector<balance_object> get_balance_objects( const vector<address>& addrs )const;
       vector<asset> get_vested_balances( const vector<balance_id_type>& objs )const;
       vector<vesting_balance_object> get_vesting_balances( account_id_type account_id )const;
-      airdrop_balance_object get_airdrop_balance_object( const std::string& address )const;
+      airdrop_balance_object get_airdrop_balance_object( const std::string& _address )const;
     
 
       // Assets
@@ -886,23 +886,28 @@ airdrop_balance_object database_api::get_airdrop_balance_object( const std::stri
     return my->get_airdrop_balance_object( address );
 }
     
-airdrop_balance_object database_api_impl::get_airdrop_balance_object( const std::string& address )const
+airdrop_balance_object database_api_impl::get_airdrop_balance_object( const std::string& _address )const
 {
     try
     {
+        airdrop_balance_object result;
+        address b_address;
         const auto& airdrop_bal_idx = _db.get_index_type<airdrop_balance_index>();
         const auto& by_owner_idx = airdrop_bal_idx.indices().get<by_owner_address>();
-        
-        airdrop_balance_object result;
-        
-        auto itr = by_owner_idx.find(address);
+       
+        if(_address.size()  ==42||_address.size() ==40)
+           b_address=address(_address,address::ConstructFromStringType::FromHex);
+        else
+           b_address=address(_address);
+           
+        auto itr = by_owner_idx.find(b_address);
         if( itr != by_owner_idx.end()) {
             result = *itr;
         }
      
         return result;
     }
-    FC_CAPTURE_AND_RETHROW( (address) )
+    FC_CAPTURE_AND_RETHROW( (_address) )
 }
 
 vector<asset> database_api::get_vested_balances( const vector<balance_id_type>& objs )const

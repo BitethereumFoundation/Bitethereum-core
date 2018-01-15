@@ -51,8 +51,11 @@ namespace graphene { namespace chain {
    class address
    {
       public:
+      
+       enum ConstructFromStringType { FromHex, FromBase58 };
+      
        address(); ///< constructs empty / null address
-       explicit address( const std::string& base58str);   ///< converts to binary, validates checksum
+       explicit address( const std::string& str,ConstructFromStringType _t = FromBase58);   ///< converts to binary, validates checksum
        address( const fc::ecc::public_key& pub ,bool eth_btc=false); ///< converts to binary
        explicit address( const fc::ecc::public_key_data& pub ); ///< converts to binary
        address( const pts_address& pub ); ///< converts to binary
