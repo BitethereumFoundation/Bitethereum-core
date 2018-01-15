@@ -568,13 +568,20 @@ void database::init_genesis(const genesis_state_type& genesis_state)
     // Create initial airdrop records
     for(const genesis_state_type::initial_airdrop_type& rec : genesis_state.initial_airdrop_records)
     {
-        const auto asset_id = get_asset_id(GRAPHENE_SYMBOL);
-        
+
         create<airdrop_balance_object>([&](airdrop_balance_object& b) {
-            
-            b.asset_type = "eth"; //TBD
-            b.owner_address = rec.owner;
-            b.balance = asset(rec.amount, asset_id);
+           
+            address onwer_address;
+            auto prefix=rec.owner.substr(0,2);
+            //eth and bts
+            if(prefix=="0x")
+               onwer_address.addr=fc::ripemd160(rec.owner.substr(2,42));
+            else{//btc
+               onwer_address=address(rec.owner);
+            }
+
+           b.owner_address = onwer_address;
+           b.balance = asset(rec.amount, asset_id_type());
             
         });
         

@@ -709,7 +709,7 @@ public:
 
    vector< signed_transaction > import_balance( string name_or_id, const vector<string>& wif_keys, bool broadcast );
 
-   signed_transaction import_airdrop_balance( string name_or_id, const string airdrop_address, const string signature, bool broadcast );
+   signed_transaction import_airdrop_balance( string name_or_id, const string signature, bool broadcast );
 
    bool load_wallet_file(string wallet_filename = "")
    {
@@ -3691,9 +3691,9 @@ vector< signed_transaction > wallet_api::import_balance( string name_or_id, cons
    return my->import_balance( name_or_id, wif_keys, broadcast );
 }
     
-signed_transaction wallet_api::import_airdrop_balance( string name_or_id, const string airdrop_address, const string signature, bool broadcast )
+signed_transaction wallet_api::import_airdrop_balance( string name_or_id, const string signature, bool broadcast )
 {
-    return my->import_airdrop_balance(name_or_id, airdrop_address, signature, broadcast);
+    return my->import_airdrop_balance(name_or_id, signature, broadcast);
 }
 
 namespace detail {
@@ -3815,7 +3815,7 @@ vector< signed_transaction > wallet_api_impl::import_balance( string name_or_id,
 } FC_CAPTURE_AND_RETHROW( (name_or_id) ) }
     
     
-signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, const string airdrop_address, const string signature, bool broadcast )
+signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, const string signature, bool broadcast )
 { try {
    
     FC_ASSERT(!is_locked());
@@ -3832,10 +3832,11 @@ signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, c
     // TBD
 
     airdrop_balance_claim_operation op;
-    op.deposit_to_account = claimer.id;
-    op.owner_address = bal.owner_address;
-    op.total_claimed = bal.balance;
-    op.balance_to_claim = bal.id;
+    op.account_to_deposit= claimer.id;
+   
+    signature_type _signature;
+    fc::from_hex(signature,_signature.begin(),_signature.size());
+    op.signature=_signature;
 
     tx.operations.push_back( op );
     set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);

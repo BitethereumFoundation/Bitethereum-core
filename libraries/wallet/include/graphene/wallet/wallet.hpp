@@ -682,7 +682,7 @@ class wallet_api
        * This call will construct transaction(s) that will claim all balances controled
        * by airdrop-address and deposit them into the given account.
       */
-      signed_transaction import_airdrop_balance( string account_name_or_id, const string airdrop_address, const string signature, bool broadcast );
+      signed_transaction import_airdrop_balance( string account_name_or_id, const string signature, bool broadcast );
     
       /** Transforms a brain key to reduce the chance of errors when re-entering the key from memory.
        *

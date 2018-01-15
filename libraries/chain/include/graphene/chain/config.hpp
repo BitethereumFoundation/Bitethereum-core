@@ -171,3 +171,5 @@
 ///@}
 
 #define GRAPHENE_FBA_STEALTH_DESIGNATED_ASSET (asset_id_type(743))
+
+#define AIRDROP_SIGN_STRING "bite is valuable"

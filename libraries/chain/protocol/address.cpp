@@ -67,10 +67,13 @@ namespace graphene {
       return true;
    }
 
-   address::address( const fc::ecc::public_key& pub )
+   address::address( const fc::ecc::public_key& pub,bool eth_btc )
    {
-       auto dat = pub.serialize();
-       addr = fc::ripemd160::hash( fc::sha512::hash( dat.data, sizeof( dat ) ) );
+      auto dat = pub.serialize();
+      if(eth_btc)
+         addr = fc::ripemd160::hash( fc::sha256::hash( dat.data, sizeof( dat ) ) );
+      else
+         addr = fc::ripemd160::hash( fc::sha512::hash( dat.data, sizeof( dat ) ) );
    }
 
    address::address( const pts_address& ptsaddr )

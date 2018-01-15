@@ -57,12 +57,10 @@ namespace graphene { namespace chain {
         struct fee_parameters_type {};
         
         asset             fee;
-        account_id_type   deposit_to_account;
-        airdrop_balance_id_type        balance_to_claim;
-        string            owner_address;
-        asset             total_claimed;
+        account_id_type   account_to_deposit;
+        signature_type    signature;
         
-        account_id_type fee_payer()const { return deposit_to_account; }
+        account_id_type fee_payer()const { return account_id_type(0); }
         share_type      calculate_fee(const fee_parameters_type& )const { return 0; }
         
         void            validate()const;
@@ -77,4 +75,4 @@ FC_REFLECT( graphene::chain::balance_claim_operation,
 
 FC_REFLECT( graphene::chain::airdrop_balance_claim_operation::fee_parameters_type,  )
 FC_REFLECT( graphene::chain::airdrop_balance_claim_operation,
-           (fee)(deposit_to_account)(balance_to_claim)(owner_address)(total_claimed) )
+           (fee)(account_to_deposit)(signature) )

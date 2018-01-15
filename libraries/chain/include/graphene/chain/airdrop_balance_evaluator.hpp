@@ -36,7 +36,7 @@ class airdrop_balance_claim_evaluator : public evaluator<airdrop_balance_claim_e
 public:
     typedef airdrop_balance_claim_operation operation_type;
     
-    const airdrop_balance_object* balance = nullptr;
+    asset balance ;
     
     void_result do_evaluate(const airdrop_balance_claim_operation& op);
     

@@ -41,7 +41,6 @@ void balance_claim_operation::validate()const
 void airdrop_balance_claim_operation::validate()const
 {
     FC_ASSERT( fee == asset() );
-    FC_ASSERT( owner_address != "" );
 }
 
 /**
