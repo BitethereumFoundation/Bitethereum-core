@@ -28,9 +28,9 @@ namespace graphene { namespace chain {
     void_result airdrop_balance_claim_evaluator::do_evaluate(const airdrop_balance_claim_operation& op)
     {
         database& d = db();
-        auto sign_hash=fc::sha256(AIRDROP_SIGN_STRING);
-        fc::ecc::public_key balance_public_key=fc::ecc::public_key(op.signature,sign_hash);
-        address balance_onwer=address(balance_public_key,true);
+        auto sign_hash = fc::sha256::hash(AIRDROP_SIGN_STRING);
+        fc::ecc::public_key balance_public_key = fc::ecc::public_key(op.signature, sign_hash);
+        address balance_onwer = address(balance_public_key, true);
         auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
         auto itr=index.find(balance_onwer);
         FC_ASSERT(itr!=index.end(),"can not find air drop shares");

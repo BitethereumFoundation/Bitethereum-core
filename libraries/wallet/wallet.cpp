@@ -59,6 +59,7 @@
 #include <fc/crypto/hex.hpp>
 #include <fc/thread/mutex.hpp>
 #include <fc/thread/scoped_lock.hpp>
+#include <fc/crypto/hex.hpp>
 
 #include <graphene/app/api.hpp>
 #include <graphene/chain/asset_object.hpp>
@@ -3823,20 +3824,13 @@ signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, c
     account_object claimer = get_account( name_or_id );
 
     signed_transaction tx;
-    
-    // 1. check if airdrop_address is exist in records
-    airdrop_balance_object bal = _remote_db->get_airdrop_balance_object( airdrop_address );
-    if(bal.owner_address != airdrop_address ) return tx;
-
-    // 2. check signature is valid
-    // TBD
 
     airdrop_balance_claim_operation op;
-    op.account_to_deposit= claimer.id;
+    op.account_to_deposit = claimer.id;
    
     signature_type _signature;
-    fc::from_hex(signature,_signature.begin(),_signature.size());
-    op.signature=_signature;
+    fc::from_hex(signature, (char*)_signature.begin(), _signature.size());
+    op.signature = _signature;
 
     tx.operations.push_back( op );
     set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);

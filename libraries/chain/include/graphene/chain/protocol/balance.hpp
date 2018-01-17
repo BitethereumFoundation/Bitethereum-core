@@ -60,7 +60,7 @@ namespace graphene { namespace chain {
         account_id_type   account_to_deposit;
         signature_type    signature;
         
-        account_id_type fee_payer()const { return account_id_type(0); }
+        account_id_type fee_payer()const { return GRAPHENE_TEMP_ACCOUNT; }
         share_type      calculate_fee(const fee_parameters_type& )const { return 0; }
         
         void            validate()const;
