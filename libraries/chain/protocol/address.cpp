@@ -83,6 +83,7 @@ namespace graphene {
    address address::get_address(fc::ecc::compact_signature _signature, AddressType type){
        
        fc::sha256 sign_hash;
+       bool bcheckCanonical = true;
        
        if(type == AddressType::ETH){
            
@@ -97,15 +98,17 @@ namespace graphene {
            
            auto str = fc::to_hex(sign_hash.data(), sign_hash.data_size());
            std::cout << str << std::endl;
+           
+           bcheckCanonical = false;
        }
        else {
            sign_hash= fc::sha256::hash(AIRDROP_SIGN_STRING);
        }
        
-       auto balance_public_key = fc::ecc::public_key::get_uncompress_public_key(_signature, sign_hash);
+       auto balance_public_key = fc::ecc::public_key::get_uncompress_public_key(_signature, sign_hash, bcheckCanonical);
       
        std::cout << fc::to_hex(balance_public_key.data, 65) << std::endl;
-       return address(balance_public_key, address::AddressType::ETH);
+       return address(balance_public_key, type);
   }
 
    address::address( const fc::ecc::public_key& pub )
