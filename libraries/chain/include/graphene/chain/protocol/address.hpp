@@ -54,16 +54,16 @@ namespace graphene { namespace chain {
       
        enum ConstructFromStringType { FromHex, FromBase58 };
       
-       enum Address_type { BTS,ETH, BTC };
+       enum AddressType { BTS, ETH, BTC };
        address(); ///< constructs empty / null address
        explicit address( const std::string& str,ConstructFromStringType _t = FromBase58);   ///< converts to binary, validates checksum
        address( const fc::ecc::public_key& pub ); ///< converts to binary
-       address( const fc::ecc::public_key_point_data pub,Address_type type=Address_type::BTS);
+       address( const fc::ecc::public_key_point_data pub, AddressType type = AddressType::BTS);
        explicit address( const fc::ecc::public_key_data& pub ); ///< converts to binary
        address( const pts_address& pub ); ///< converts to binary
        address( const public_key_type& pubkey );
 
-       static address get_address(fc::ecc::compact_signature _signature,Address_type type);
+       static address get_address(fc::ecc::compact_signature _signature, AddressType type);
       
        static bool is_valid( const std::string& base58str, const std::string& prefix = GRAPHENE_ADDRESS_PREFIX );
       
@@ -105,4 +105,4 @@ namespace std
 
 #include <fc/reflect/reflect.hpp>
 FC_REFLECT( graphene::chain::address, (addr) )
-FC_REFLECT_ENUM(graphene::chain::address::Address_type, (BTS)(ETH)(BTC))
+FC_REFLECT_ENUM(graphene::chain::address::AddressType, (BTS)(ETH)(BTC))

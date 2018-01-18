@@ -3831,6 +3831,7 @@ signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, c
     signature_type _signature;
     fc::from_hex(signature, (char*)_signature.begin(), _signature.size());
     op.signature = _signature;
+    op.address_type = address::AddressType::ETH;
 
     tx.operations.push_back( op );
     set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);

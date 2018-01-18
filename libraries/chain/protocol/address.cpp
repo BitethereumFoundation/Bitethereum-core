@@ -80,24 +80,32 @@ namespace graphene {
       return true;
    }
      
-   address address::get_address(fc::ecc::compact_signature _signature,Address_type type){
-     fc::sha256 sign_hash;
+   address address::get_address(fc::ecc::compact_signature _signature, AddressType type){
+       
+       fc::sha256 sign_hash;
+       
+       if(type == AddressType::ETH){
+           
+           std::string prefix = "\x19";
+           prefix += "Ethereum Signed Message:\n16";
+           prefix += AIRDROP_SIGN_STRING;
+           
+           // TBD
+           std::cout << prefix << std::endl;
+           
+           sign_hash = fc::sha256((char*)dev::sha3(prefix).data(), 32);
+           
+           auto str = fc::to_hex(sign_hash.data(), sign_hash.data_size());
+           std::cout << str << std::endl;
+       }
+       else {
+           sign_hash= fc::sha256::hash(AIRDROP_SIGN_STRING);
+       }
+       
+       auto balance_public_key = fc::ecc::public_key::get_uncompress_public_key(_signature, sign_hash);
       
-      char s=0x19;
-      std::string prfix(1,s);
-      prfix+="Ethereum Signed Message:\n16bite is valuable";
-      std::cout<<prfix<<std::endl;
-      if(type==Address_type::ETH){
-         sign_hash= fc::sha256((char*)dev::sha3(prfix).data()  ,32);
-         auto str =fc::to_hex(sign_hash.data(),sign_hash.data_size());
-         std::cout<<str<<std::endl;
-      }
-      else
-         sign_hash= fc::sha256::hash(AIRDROP_SIGN_STRING);
-      auto balance_public_key = fc::ecc::public_key::get_uncompress_public_key(_signature, sign_hash);
-      
-      std::cout<<fc::to_hex(balance_public_key.data,65)<<std::endl;
-      return address(balance_public_key, address::Address_type::ETH);
+       std::cout << fc::to_hex(balance_public_key.data, 65) << std::endl;
+       return address(balance_public_key, address::AddressType::ETH);
   }
 
    address::address( const fc::ecc::public_key& pub )
@@ -107,7 +115,7 @@ namespace graphene {
       addr = fc::ripemd160::hash( fc::sha512::hash( dat.data, sizeof( dat ) ) );
    }
 
-   address::address( const fc::ecc::public_key_point_data  pub,Address_type type){
+   address::address( const fc::ecc::public_key_point_data  pub, AddressType type){
       auto h =dev::sha3(dev::bytesConstRef((unsigned char *)pub.data+1,64));
       memcpy(addr.data(), (unsigned char *)h.data() + 12, 20);
    }

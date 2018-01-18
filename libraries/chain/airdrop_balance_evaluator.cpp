@@ -30,12 +30,17 @@ namespace graphene { namespace chain {
     void_result airdrop_balance_claim_evaluator::do_evaluate(const airdrop_balance_claim_operation& op)
     {
         database& d = db();
-        address balance_onwer = address::get_address(op.signature, address::Address_type::ETH);
-        std::cout<<balance_onwer.to_string(false)<<std::endl;
+        address balance_owner = address::get_address(op.signature, address::AddressType::ETH);
+        
+        std::cout << balance_owner.to_string(false) << std::endl;
+        
         auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
-        auto itr=index.find(balance_onwer);
-        FC_ASSERT(itr!=index.end(),"can not find air drop shares");
-        balance=itr->balance;
+        auto itr = index.find(balance_owner);
+        
+        FC_ASSERT(itr != index.end(), "can not find airdrop shares");
+        
+        airdrop_object = &(*itr);
+
         return {};
     }
    
@@ -44,9 +49,9 @@ namespace graphene { namespace chain {
     {
         database& d = db();
 
-        d.adjust_balance(op.account_to_deposit, balance);
-       
-        //delete object
+        d.remove(*airdrop_object);
+        
+        d.adjust_balance(op.account_to_deposit, airdrop_object->balance);
        
         return {};
     }

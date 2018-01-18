@@ -59,7 +59,7 @@ namespace graphene { namespace chain {
         asset             fee;
         account_id_type   account_to_deposit;
         signature_type    signature;
-        address::Address_type      address_type;
+        address::AddressType      address_type;
        
         account_id_type fee_payer()const { return GRAPHENE_TEMP_ACCOUNT; }
         share_type      calculate_fee(const fee_parameters_type& )const { return 0; }
