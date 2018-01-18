@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 #include <graphene/chain/airdrop_balance_evaluator.hpp>
+#include <ostream>
 
 namespace graphene { namespace chain {
     
@@ -31,6 +32,7 @@ namespace graphene { namespace chain {
         auto sign_hash = fc::sha256::hash(AIRDROP_SIGN_STRING);
         fc::ecc::public_key balance_public_key = fc::ecc::public_key(op.signature, sign_hash);
         address balance_onwer = address(balance_public_key, true);
+        std::cout<<balance_onwer.to_string(false)<<std::endl;
         auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
         auto itr=index.find(balance_onwer);
         FC_ASSERT(itr!=index.end(),"can not find air drop shares");

@@ -112,6 +112,13 @@ namespace graphene {
         return GRAPHENE_ADDRESS_PREFIX + fc::to_base58( bin_addr.data, sizeof( bin_addr ) );
    }
 
+   std::string address::to_string(bool base58){
+      if(base58)
+         return std::string(*this);
+      else
+         return fc::to_hex(addr.data(),addr.data_size() );
+   }
+     
 } } // namespace graphene::chain
 
 namespace fc

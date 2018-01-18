@@ -64,6 +64,7 @@ namespace graphene { namespace chain {
        static bool is_valid( const std::string& base58str, const std::string& prefix = GRAPHENE_ADDRESS_PREFIX );
 
        explicit operator std::string()const; ///< converts to base58 + checksum
+       std::string to_string(bool base58=true);
 
        friend size_t hash_value( const address& v ) { 
           const void* tmp = static_cast<const void*>(v.addr._hash+2);
