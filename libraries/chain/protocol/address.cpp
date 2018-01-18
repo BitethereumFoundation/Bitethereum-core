@@ -83,7 +83,7 @@ namespace graphene {
    {
       if(eth_btc){
          auto dat = pub.serialize_ecc_point();
-         addr = fc::ripemd160::hash( fc::sha256::hash( dat.data+1, sizeof( dat ) ) );}
+         addr = fc::ripemd160::hash( fc::sha256::hash( dat.data+1, sizeof( dat ) - 1 ) );}
       else
       {
          auto dat = pub.serialize();

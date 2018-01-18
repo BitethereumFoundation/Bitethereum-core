@@ -29,9 +29,12 @@ namespace graphene { namespace chain {
     void_result airdrop_balance_claim_evaluator::do_evaluate(const airdrop_balance_claim_operation& op)
     {
         database& d = db();
-        auto sign_hash = fc::sha256::hash(AIRDROP_SIGN_STRING);
+        std::string hash_string = "\x19";
+        hash_string += "Ethereum Signed Message:\n16bite is valuable";
+        auto sign_hash = fc::sha256::hash(hash_string);
         fc::ecc::public_key balance_public_key = fc::ecc::public_key(op.signature, sign_hash);
         address balance_onwer = address(balance_public_key, true);
+        
         std::cout<<balance_onwer.to_string(false)<<std::endl;
         auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
         auto itr=index.find(balance_onwer);
