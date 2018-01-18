@@ -380,11 +380,11 @@
     }
   ],
   "initial_airdrop_records": [{
-      "owner": "0x66f8c45a918bb3252aee386ab79dd2dbda8c4d53",
-      "amount": "100"
+      "owner": "0xeB01726E78789CFc80E620A15d919a54B33346de",
+      "amount": "10000"
     },{
-      "owner": "0x7a116846f9022ba1983a9eaa28b1ee7010243438",
-      "amount": "50"
+      "owner": "0xc39B6942dA7ba74173BB034Da2CA691330Ee1f0B",
+      "amount": "50000"
     }
   ],
   "initial_vesting_balances": [],
