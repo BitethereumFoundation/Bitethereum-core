@@ -27,6 +27,7 @@
 #include <fc/crypto/base58.hpp>
 #include <algorithm>
 #include <fc/crypto/hex.hpp>
+#include <eth/libdevcore/SHA3.h>
 
 namespace graphene {
   namespace chain {
@@ -78,18 +79,38 @@ namespace graphene {
 
       return true;
    }
-
-   address::address( const fc::ecc::public_key& pub,bool eth_btc )
-   {
-      if(eth_btc){
-         auto dat = pub.serialize_ecc_point();
-         addr = fc::ripemd160::hash( fc::sha256::hash( dat.data+1, sizeof( dat ) ) );}
+     
+   address address::get_address(fc::ecc::compact_signature _signature,Address_type type){
+     fc::sha256 sign_hash;
+      
+      char s=0x19;
+      std::string prfix(1,s);
+      prfix+="Ethereum Signed Message:\n16bite is valuable";
+      std::cout<<prfix<<std::endl;
+      if(type==Address_type::ETH){
+         sign_hash= fc::sha256((char*)dev::sha3(prfix).data()  ,32);
+         auto str =fc::to_hex(sign_hash.data(),sign_hash.data_size());
+         std::cout<<str<<std::endl;
+      }
       else
-      {
-         auto dat = pub.serialize();
-         addr = fc::ripemd160::hash( fc::sha512::hash( dat.data, sizeof( dat ) ) );}
+         sign_hash= fc::sha256::hash(AIRDROP_SIGN_STRING);
+      auto balance_public_key = fc::ecc::public_key::get_uncompress_public_key(_signature, sign_hash);
+      
+      std::cout<<fc::to_hex(balance_public_key.data,65)<<std::endl;
+      return address(balance_public_key, address::Address_type::ETH);
+  }
+
+   address::address( const fc::ecc::public_key& pub )
+   {
+
+      auto dat = pub.serialize();
+      addr = fc::ripemd160::hash( fc::sha512::hash( dat.data, sizeof( dat ) ) );
    }
 
+   address::address( const fc::ecc::public_key_point_data  pub,Address_type type){
+      auto h =dev::sha3(dev::bytesConstRef((unsigned char *)pub.data+1,64));
+      memcpy(addr.data(), (unsigned char *)h.data() + 12, 20);
+   }
    address::address( const pts_address& ptsaddr )
    {
        addr = fc::ripemd160::hash( (char*)&ptsaddr, sizeof( ptsaddr ) );

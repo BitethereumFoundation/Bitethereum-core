@@ -43,3 +43,5 @@ object_database/*
 *.pyo
 
 build/
+libraries/eth/libscrypt/
+libraries/eth/libdevcrypto/

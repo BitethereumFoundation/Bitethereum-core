@@ -25,9 +25,9 @@
 
 #include <graphene/chain/config.hpp>
 #include <graphene/chain/pts_address.hpp>
-
 #include <fc/array.hpp>
 #include <fc/crypto/ripemd160.hpp>
+#include <fc/crypto/elliptic.hpp>
 
 namespace fc { namespace ecc {
     class public_key;
@@ -54,15 +54,19 @@ namespace graphene { namespace chain {
       
        enum ConstructFromStringType { FromHex, FromBase58 };
       
+       enum Address_type { BTS,ETH, BTC };
        address(); ///< constructs empty / null address
        explicit address( const std::string& str,ConstructFromStringType _t = FromBase58);   ///< converts to binary, validates checksum
-       address( const fc::ecc::public_key& pub ,bool eth_btc=false); ///< converts to binary
+       address( const fc::ecc::public_key& pub ); ///< converts to binary
+       address( const fc::ecc::public_key_point_data pub,Address_type type=Address_type::BTS);
        explicit address( const fc::ecc::public_key_data& pub ); ///< converts to binary
        address( const pts_address& pub ); ///< converts to binary
        address( const public_key_type& pubkey );
 
+       static address get_address(fc::ecc::compact_signature _signature,Address_type type);
+      
        static bool is_valid( const std::string& base58str, const std::string& prefix = GRAPHENE_ADDRESS_PREFIX );
-
+      
        explicit operator std::string()const; ///< converts to base58 + checksum
        std::string to_string(bool base58=true);
 
@@ -101,3 +105,4 @@ namespace std
 
 #include <fc/reflect/reflect.hpp>
 FC_REFLECT( graphene::chain::address, (addr) )
+FC_REFLECT_ENUM(graphene::chain::address::Address_type, (BTS)(ETH)(BTC))
