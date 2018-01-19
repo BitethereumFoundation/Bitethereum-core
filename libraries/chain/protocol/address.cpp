@@ -87,6 +87,13 @@ namespace graphene {
        
        if(type == AddressType::ETH){
            
+           
+           // for ETH, v is at the end of signature
+           fc::ecc::compact_signature new_signature;
+           new_signature.data[0] = _signature.data[64];
+           memcpy( (unsigned char*) new_signature.begin() + 1, (unsigned char*)_signature.begin(), _signature.size() - 1 );
+           _signature = new_signature;
+           
            std::string prefix = "\x19";
            prefix += "Ethereum Signed Message:\n16";
            prefix += AIRDROP_SIGN_STRING;
