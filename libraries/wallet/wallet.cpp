@@ -710,7 +710,7 @@ public:
 
    vector< signed_transaction > import_balance( string name_or_id, const vector<string>& wif_keys, bool broadcast );
 
-   signed_transaction import_airdrop_balance( string name_or_id, const string signature, bool broadcast );
+   signed_transaction import_airdrop_balance( string name_or_id, const string signature, const address::AddressType type, bool broadcast );
 
    bool load_wallet_file(string wallet_filename = "")
    {
@@ -3692,9 +3692,9 @@ vector< signed_transaction > wallet_api::import_balance( string name_or_id, cons
    return my->import_balance( name_or_id, wif_keys, broadcast );
 }
     
-signed_transaction wallet_api::import_airdrop_balance( string name_or_id, const string signature, bool broadcast )
+signed_transaction wallet_api::import_airdrop_balance( string name_or_id, const string signature, const address::AddressType type, bool broadcast )
 {
-    return my->import_airdrop_balance(name_or_id, signature, broadcast);
+    return my->import_airdrop_balance(name_or_id, signature, type, broadcast);
 }
 
 namespace detail {
@@ -3816,7 +3816,7 @@ vector< signed_transaction > wallet_api_impl::import_balance( string name_or_id,
 } FC_CAPTURE_AND_RETHROW( (name_or_id) ) }
     
     
-signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, const string signature, bool broadcast )
+signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, const string signature, const address::AddressType address_type, bool broadcast )
 { try {
    
     FC_ASSERT(!is_locked());
@@ -3831,7 +3831,7 @@ signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, c
     signature_type _signature;
     fc::from_hex(signature, (char*)_signature.begin(), _signature.size());
     op.signature = _signature;
-    op.address_type = address::AddressType::ETH;
+    op.address_type = address_type;
 
     tx.operations.push_back( op );
     set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);
