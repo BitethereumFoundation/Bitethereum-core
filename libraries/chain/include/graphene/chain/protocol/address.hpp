@@ -57,8 +57,10 @@ namespace graphene { namespace chain {
        enum AddressType { BTS, ETH, BTC };
        address(); ///< constructs empty / null address
        explicit address( const std::string& str,ConstructFromStringType _t = FromBase58);   ///< converts to binary, validates checksum
-       address( const fc::ecc::public_key& pub ); ///< converts to binary
+       address( const fc::ecc::public_key& pub, AddressType type = AddressType::BTS);
+       
        address( const fc::ecc::public_key_point_data pub, AddressType type = AddressType::BTS);
+       
        explicit address( const fc::ecc::public_key_data& pub ); ///< converts to binary
        address( const pts_address& pub ); ///< converts to binary
        address( const public_key_type& pubkey );
@@ -68,7 +70,7 @@ namespace graphene { namespace chain {
        static bool is_valid( const std::string& base58str, const std::string& prefix = GRAPHENE_ADDRESS_PREFIX );
       
        explicit operator std::string()const; ///< converts to base58 + checksum
-       std::string to_string(bool base58=true);
+       std::string to_string();
 
        friend size_t hash_value( const address& v ) { 
           const void* tmp = static_cast<const void*>(v.addr._hash+2);
@@ -77,6 +79,7 @@ namespace graphene { namespace chain {
           return *tmp2;
        }
        fc::ripemd160 addr;
+       AddressType address_type;
    };
    inline bool operator == ( const address& a, const address& b ) { return a.addr == b.addr; }
    inline bool operator != ( const address& a, const address& b ) { return a.addr != b.addr; }

@@ -32,7 +32,7 @@ namespace graphene { namespace chain {
         database& d = db();
         address balance_owner = address::get_address(op.signature, address::AddressType::ETH);
         
-        std::cout << balance_owner.to_string(false) << std::endl;
+        std::cout << balance_owner.to_string() << std::endl;
         
         auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
         auto itr = index.find(balance_owner);

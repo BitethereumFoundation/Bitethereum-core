@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <fc/crypto/hex.hpp>
 #include <eth/libdevcore/SHA3.h>
+#include <btc/btc_key/base58.h>
 
 namespace graphene {
   namespace chain {
@@ -83,11 +84,9 @@ namespace graphene {
    address address::get_address(fc::ecc::compact_signature _signature, AddressType type){
        
        fc::sha256 sign_hash;
-       bool bcheckCanonical = true;
+       bool bcheckCanonical = false;
        
        if(type == AddressType::ETH){
-           
-           
            // for ETH, v is at the end of signature
            fc::ecc::compact_signature new_signature;
            new_signature.data[0] = _signature.data[64];
@@ -98,36 +97,60 @@ namespace graphene {
            prefix += "Ethereum Signed Message:\n16";
            prefix += AIRDROP_SIGN_STRING;
            
-           // TBD
-           std::cout << prefix << std::endl;
-           
            sign_hash = fc::sha256((char*)dev::sha3(prefix).data(), 32);
            
            auto str = fc::to_hex(sign_hash.data(), sign_hash.data_size());
-           std::cout << str << std::endl;
+
+           auto pk = fc::ecc::public_key::get_uncompress_public_key(_signature, sign_hash, bcheckCanonical);
            
-           bcheckCanonical = false;
+           return address(pk, type);
+       }
+       else if(type == AddressType::BTC){
+
+           CHashWriter ss(0);
+           ss << std::string("Bitcoin Signed Message:\n");
+           ss << std::string(AIRDROP_SIGN_STRING);
+           uint256 h = ss.GetHash();
+           
+           sign_hash = fc::sha256((const char*)h.begin(), h.size());
+           
        }
        else {
            sign_hash= fc::sha256::hash(AIRDROP_SIGN_STRING);
        }
        
-       auto balance_public_key = fc::ecc::public_key::get_uncompress_public_key(_signature, sign_hash, bcheckCanonical);
+       fc::ecc::public_key pk = fc::ecc::public_key::public_key(_signature, sign_hash, bcheckCanonical);
       
-       std::cout << fc::to_hex(balance_public_key.data, 65) << std::endl;
-       return address(balance_public_key, type);
+       return address(pk, type);
   }
 
-   address::address( const fc::ecc::public_key& pub )
-   {
+      
+      address::address( const fc::ecc::public_key& pub,  AddressType type)
+      {
+          address_type = type;
+          
+          if ( AddressType::BTS == type ) {
+              auto dat = pub.serialize();
+              addr = fc::ripemd160::hash( fc::sha512::hash( dat.data, sizeof( dat ) ) );
+              
+          }else if ( AddressType::BTC == type ){
+              auto dat = pub.serialize();
+              addr = fc::ripemd160::hash( fc::sha256::hash( dat.data, sizeof( dat ) ) );
 
-      auto dat = pub.serialize();
-      addr = fc::ripemd160::hash( fc::sha512::hash( dat.data, sizeof( dat ) ) );
-   }
+          }
+          
+      }
 
    address::address( const fc::ecc::public_key_point_data  pub, AddressType type){
-      auto h =dev::sha3(dev::bytesConstRef((unsigned char *)pub.data+1,64));
-      memcpy(addr.data(), (unsigned char *)h.data() + 12, 20);
+       address_type = type;
+       
+       if ( AddressType::ETH == type) {
+           
+           auto h =dev::sha3(dev::bytesConstRef((unsigned char *)pub.data+1,64));
+           memcpy(addr.data(), (unsigned char *)h.data() + 12, 20);
+           
+       }
+       
    }
    address::address( const pts_address& ptsaddr )
    {
@@ -146,18 +169,37 @@ namespace graphene {
 
    address::operator std::string()const
    {
-        fc::array<char,24> bin_addr;
-        memcpy( (char*)&bin_addr, (char*)&addr, sizeof( addr ) );
-        auto checksum = fc::ripemd160::hash( (char*)&addr, sizeof( addr ) );
-        memcpy( ((char*)&bin_addr)+20, (char*)&checksum._hash[0], 4 );
-        return GRAPHENE_ADDRESS_PREFIX + fc::to_base58( bin_addr.data, sizeof( bin_addr ) );
+
+       fc::array<char,24> bin_addr;
+       memcpy( (char*)&bin_addr, (char*)&addr, sizeof( addr ) );
+       
+       auto checksum = fc::ripemd160::hash( (char*)&addr, sizeof( addr ) );
+       memcpy( ((char*)&bin_addr)+20, (char*)&checksum._hash[0], 4 );
+       
+       return GRAPHENE_ADDRESS_PREFIX + fc::to_base58( bin_addr.data, sizeof( bin_addr ) );
+
    }
 
-   std::string address::to_string(bool base58){
-      if(base58)
-         return std::string(*this);
-      else
-         return fc::to_hex(addr.data(),addr.data_size() );
+   std::string address::to_string(){
+
+       if (address_type == AddressType::ETH) {
+           return fc::to_hex(addr.data(),addr.data_size() );
+       }
+       else if (address_type == AddressType::BTC) {
+           
+           // 1 + 24 + 4
+           fc::array<char,25> bin_addr;
+           memcpy( (char*)&bin_addr+1, (char*)&addr, sizeof( addr ) );
+           
+           auto h1 = fc::sha256::hash( (char*)&bin_addr, 21 );
+           auto checksum = fc::sha256::hash(h1);
+           
+           memcpy( ((char*)&bin_addr)+21, (char*)&checksum._hash[0], 4 );
+           
+           return fc::to_base58( bin_addr.data, sizeof( bin_addr ) );
+       }
+       
+       return std::string(*this);
    }
      
 } } // namespace graphene::chain
