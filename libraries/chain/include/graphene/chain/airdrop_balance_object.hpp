@@ -35,7 +35,7 @@ namespace graphene { namespace chain {
             static const uint8_t space_id = protocol_ids;
             static const uint8_t type_id  = airdrop_balance_object_type;
        
-            address owner_address;
+            string owner;
             asset balance;
         
     };
@@ -47,7 +47,7 @@ namespace graphene { namespace chain {
                 member<object, object_id_type, &object::id>
             >,
             ordered_unique< tag<by_owner_address>,
-                member<airdrop_balance_object, address, &airdrop_balance_object::owner_address>
+                member<airdrop_balance_object, string, &airdrop_balance_object::owner>
             >
         >
     >;
@@ -58,5 +58,5 @@ namespace graphene { namespace chain {
 } }
 
 FC_REFLECT_DERIVED( graphene::chain::airdrop_balance_object, (graphene::db::object),
-                   (owner_address)(balance) )
+                   (owner)(balance) )
 

@@ -891,16 +891,11 @@ airdrop_balance_object database_api_impl::get_airdrop_balance_object( const std:
     try
     {
         airdrop_balance_object result;
-        address b_address;
         const auto& airdrop_bal_idx = _db.get_index_type<airdrop_balance_index>();
         const auto& by_owner_idx = airdrop_bal_idx.indices().get<by_owner_address>();
        
-        if(_address.size()  ==42||_address.size() ==40)
-           b_address=address(_address,address::ConstructFromStringType::FromHex);
-        else
-           b_address=address(_address);
            
-        auto itr = by_owner_idx.find(b_address);
+        auto itr = by_owner_idx.find(_address);
         if( itr != by_owner_idx.end()) {
             result = *itr;
         }

@@ -570,18 +570,16 @@ void database::init_genesis(const genesis_state_type& genesis_state)
     {
 
         create<airdrop_balance_object>([&](airdrop_balance_object& b) {
-           
-            address owner_address;
+
             auto prefix = rec.owner.substr(0,2);
             
             //eth
             if(prefix == "0x")
-               owner_address.addr = fc::ripemd160(rec.owner.substr(2,42));
+               b.owner = rec.owner.substr(2,42);
             else{//btc
-               owner_address = address(rec.owner);
+               b.owner = rec.owner;
             }
 
-           b.owner_address = owner_address;
            b.balance = asset(rec.amount, asset_id_type());
             
         });
