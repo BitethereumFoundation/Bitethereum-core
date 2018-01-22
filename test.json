@@ -376,7 +376,7 @@
   "initial_balances": [{
       "owner": "BITEJ3vKDYtDvN987xe7qxccpWsX1BfTWauEd",
       "asset_symbol": "BITE",
-      "amount": "1000000000000000"
+      "amount": "10000000000000"
     }
   ],
   "initial_airdrop_records": [{
