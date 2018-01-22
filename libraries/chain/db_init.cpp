@@ -574,9 +574,10 @@ void database::init_genesis(const genesis_state_type& genesis_state)
             auto prefix = rec.owner.substr(0,2);
             
             //eth
-            if(prefix == "0x")
-               b.owner = rec.owner.substr(2,42);
-            else{//btc
+            if(prefix == "0x") {
+                b.owner = rec.owner.substr(2,42);
+                boost::algorithm::to_lower(b.owner);
+            }else{//btc
                b.owner = rec.owner;
             }
 

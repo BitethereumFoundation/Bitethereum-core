@@ -3838,15 +3838,26 @@ signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, c
     airdrop_balance_claim_operation op;
     op.account_to_deposit = claimer.id;
     
-    string new_signature = signature;
+    string str_signature = signature;
+    
+    signature_type _signature;
+    
     if (address_type == address::AddressType::ETH) {
         if(signature.substr(0,2) == "0x")
-            new_signature = signature.substr(2);
-        FC_ASSERT( new_signature.length() == 130, "ETH signature length should be 130" );
+            str_signature = signature.substr(2);
+        FC_ASSERT( str_signature.length() == 130, "ETH signature length should be 130" );
+        
+        fc::from_hex(str_signature, (char*)_signature.begin(), _signature.size());
+        
+    }else if(address_type == address::AddressType::BTC ) {
+        str_signature = fc::base64_decode(signature);
+        memcpy(_signature.begin(), str_signature.c_str(), _signature.size());
+        
+    }else {
+        FC_ASSERT(false, "only airdrop to ETH and BTC");
     }
    
-    signature_type _signature;
-    fc::from_hex(new_signature, (char*)_signature.begin(), _signature.size());
+    
     op.signature = _signature;
     op.address_type = address_type;
 
