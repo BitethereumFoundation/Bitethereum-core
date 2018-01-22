@@ -684,6 +684,9 @@ class wallet_api
       */
       signed_transaction import_airdrop_balance( string account_name_or_id, const string signature, const address::AddressType type, bool broadcast );
     
+    
+    airdrop_balance_object get_airdrop_balance_object(string owner);
+    
       /** Transforms a brain key to reduce the chance of errors when re-entering the key from memory.
        *
        * This takes a user-supplied brain key and normalizes it into the form used
@@ -1672,6 +1675,7 @@ FC_API( graphene::wallet::wallet_api,
         (import_account_keys)
         (import_balance)
         (import_airdrop_balance)
+       (get_airdrop_balance_object)
         (suggest_brain_key)
         (derive_owner_keys_from_brain_key)
         (register_account)

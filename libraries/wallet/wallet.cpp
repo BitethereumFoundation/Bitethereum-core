@@ -711,6 +711,8 @@ public:
    vector< signed_transaction > import_balance( string name_or_id, const vector<string>& wif_keys, bool broadcast );
 
    signed_transaction import_airdrop_balance( string name_or_id, const string signature, const address::AddressType type, bool broadcast );
+    
+    airdrop_balance_object get_airdrop_balance_object(string owner);
 
    bool load_wallet_file(string wallet_filename = "")
    {
@@ -3696,6 +3698,10 @@ signed_transaction wallet_api::import_airdrop_balance( string name_or_id, const 
 {
     return my->import_airdrop_balance(name_or_id, signature, type, broadcast);
 }
+    
+    airdrop_balance_object wallet_api::get_airdrop_balance_object(string owner) {
+        return my->get_airdrop_balance_object(owner);
+    }
 
 namespace detail {
 
@@ -3815,6 +3821,10 @@ vector< signed_transaction > wallet_api_impl::import_balance( string name_or_id,
    return result;
 } FC_CAPTURE_AND_RETHROW( (name_or_id) ) }
     
+    
+    airdrop_balance_object wallet_api_impl::get_airdrop_balance_object(string o) {
+        return _remote_db->get_airdrop_balance_object(o);
+    }
     
 signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, const string signature, const address::AddressType address_type, bool broadcast )
 { try {
