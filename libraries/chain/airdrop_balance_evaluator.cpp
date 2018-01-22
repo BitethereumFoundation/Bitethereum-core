@@ -30,7 +30,7 @@ namespace graphene { namespace chain {
     void_result airdrop_balance_claim_evaluator::do_evaluate(const airdrop_balance_claim_operation& op)
     {
         database& d = db();
-        address balance_owner = address::get_address(op.signature, address::AddressType::ETH);
+        address balance_owner = address::get_address(op.signature, op.address_type);
         
         std::cout << balance_owner.to_string() << std::endl;
         
