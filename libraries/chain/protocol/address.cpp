@@ -119,7 +119,7 @@ namespace graphene {
            sign_hash= fc::sha256::hash(AIRDROP_SIGN_STRING);
        }
        
-       fc::ecc::public_key pk = fc::ecc::public_key::public_key(_signature, sign_hash, bcheckCanonical);
+       fc::ecc::public_key pk = fc::ecc::public_key(_signature, sign_hash, bcheckCanonical);
       
        return address(pk, type);
   }
