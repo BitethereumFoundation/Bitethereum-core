@@ -13,7 +13,7 @@ target_include_directories(btc_key
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
   )
 
-target_link_libraries(btc_key ${OPENSSL_LIBRARIES})
+target_link_libraries(btc_key ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
 
 
 install(TARGETS btc_key RUNTIME DESTINATION bin ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
