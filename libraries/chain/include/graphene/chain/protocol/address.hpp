@@ -65,7 +65,7 @@ namespace graphene { namespace chain {
        address( const pts_address& pub ); ///< converts to binary
        address( const public_key_type& pubkey );
 
-       static address get_address(fc::ecc::compact_signature _signature, AddressType type);
+       static address get_address(fc::ecc::compact_signature _signature, AddressType type, bool bUncompressPubKey);
       
        static bool is_valid( const std::string& base58str, const std::string& prefix = GRAPHENE_ADDRESS_PREFIX );
       

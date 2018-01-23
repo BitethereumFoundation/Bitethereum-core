@@ -53,8 +53,8 @@ void recoverEthAddress()
     
     fc::ecc::compact_signature _signature;
     fc::from_hex(str, (char *)_signature.begin(), _signature.size());
-    auto addr = address::get_address(_signature, address::AddressType::ETH);
-    std::cout << addr.to_string() << std::endl;
+    auto addr = address::get_address(_signature, address::AddressType::ETH, true);
+    std::cout << addr.to_string(address::AddressType::ETH) << std::endl;
 }
 
 
@@ -66,14 +66,18 @@ void recoverEthAddress()
 //sig: IKPvAm2tOELWR7YeLMoN50BHgQqu+EbZ4RuKuQO3RVk/Su1hyS9+SjM2nNEiP6c+asfJt6AiyI0nBth11dWicG4=
 void recoverBtcAddress()
 {
-    std::string strSig = "IDqDCnezrliCuCtO7U0Y8lflNu8ggMQGDsF/Tp9c0zWwE55v3m2zICs2hdtCNPfCbFjXaG+jDdjgRQlSnYZ9Nfs=";
+    std::string strSig = "HHzPQPyAWy+0RuRYOiWr5Drt6Ysj2Rw40uhDriDOWTYDJo0INJrG/S70LEggn/AxbW8s7kxNYkAOLBI4Db0Rdhg=";
     std::string sig = fc::base64_decode(strSig);
     
     fc::ecc::compact_signature _signature;
     memcpy(_signature.begin(), sig.c_str(), _signature.size());
     
-    auto addr = address::get_address(_signature, address::AddressType::BTC);
-    std::cout << addr.to_string() << std::endl;
+    auto addr = address::get_address(_signature, address::AddressType::BTC, true);
+    std::cout << addr.to_string(address::AddressType::BTC) << std::endl;
+    
+    
+    addr = address::get_address(_signature, address::AddressType::BTC, false);
+    std::cout << addr.to_string(address::AddressType::BTC) << std::endl;
     
     
 //    std::cout << "str signature is "<<fc::to_hex((const char*)_signature.begin(), 65) << std::endl;
@@ -108,7 +112,7 @@ void recoverBtcAddress()
 
 int main(int argc, char** argv)
 {
-    recoverEthAddress();
+//    recoverEthAddress();
     
     recoverBtcAddress();
    

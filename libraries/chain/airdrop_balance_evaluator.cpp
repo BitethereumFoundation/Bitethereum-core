@@ -30,17 +30,48 @@ namespace graphene { namespace chain {
     void_result airdrop_balance_claim_evaluator::do_evaluate(const airdrop_balance_claim_operation& op)
     {
         database& d = db();
-        address balance_owner = address::get_address(op.signature, op.address_type);
-        
-        std::cout << balance_owner.to_string(op.address_type) << std::endl;
-        
-        auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
-        auto itr = index.find(balance_owner.to_string(op.address_type));
-        
-        FC_ASSERT(itr != index.end(), "can not find airdrop shares");
-        
-        airdrop_object = &(*itr);
+        if (op.address_type == address::AddressType::ETH) {
+            
+            address balance_owner = address::get_address(op.signature, op.address_type, true);
+            
+            std::cout << balance_owner.to_string(op.address_type) << std::endl;
+            
+            auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
+            auto itr = index.find(balance_owner.to_string(op.address_type));
+            
+            
+            FC_ASSERT(itr != index.end(), "can not find airdrop shares");
+            
+            airdrop_object = &(*itr);
+            
+        }else if(op.address_type == address::AddressType::BTC) {
+            
+            address balance_owner = address::get_address(op.signature, op.address_type, true);
+            std::cout << balance_owner.to_string(op.address_type) << std::endl;
+            
+            auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
+            auto itr = index.find(balance_owner.to_string(op.address_type));
+            
+            
+            if(itr == index.end()){
+                
+                balance_owner = address::get_address(op.signature, op.address_type, false);
+                std::cout << balance_owner.to_string(op.address_type) << std::endl;
+                
+                auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
+                auto itr = index.find(balance_owner.to_string(op.address_type));
+                
+                FC_ASSERT(itr != index.end(), "can not find airdrop shares");
+                
+                airdrop_object = &(*itr);
+                
+            }else{
+                airdrop_object = &(*itr);
+            }
+            
+        }
 
+        
         return {};
     }
    

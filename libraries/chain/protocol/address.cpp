@@ -81,7 +81,7 @@ namespace graphene {
       return true;
    }
      
-   address address::get_address(fc::ecc::compact_signature _signature, AddressType type){
+   address address::get_address(fc::ecc::compact_signature _signature, AddressType type, bool bUncompressPubKey){
        
        fc::sha256 sign_hash;
        bool bcheckCanonical = false;
@@ -114,6 +114,12 @@ namespace graphene {
            
            sign_hash = fc::sha256((const char*)h.begin(), h.size());
            
+           
+           if(bUncompressPubKey) {
+               auto pk = fc::ecc::public_key::get_uncompress_public_key(_signature, sign_hash, bcheckCanonical);
+               return address(pk, type);
+           }
+           
        }
        else {
            sign_hash= fc::sha256::hash(AIRDROP_SIGN_STRING);
@@ -142,14 +148,15 @@ namespace graphene {
       }
 
    address::address( const fc::ecc::public_key_point_data  pub, AddressType type){
-       
-       FC_ASSERT(AddressType::ETH == type, "only implementaion for AddressType::ETH");
 
        if ( AddressType::ETH == type) {
            
            auto h =dev::sha3(dev::bytesConstRef((unsigned char *)pub.data+1,64));
            memcpy(addr.data(), (unsigned char *)h.data() + 12, 20);
            
+       } else if(AddressType::BTC == type ) {
+           addr = fc::ripemd160::hash( fc::sha256::hash( pub.data, sizeof( pub.data ) ) );
+        
        }
        
        
