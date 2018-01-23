@@ -127,7 +127,7 @@ namespace graphene {
       
       address::address( const fc::ecc::public_key& pub,  AddressType type)
       {
-          address_type = type;
+          FC_ASSERT(AddressType::ETH != type, "no implementaion for AddressType::ETH");
           
           if ( AddressType::BTS == type ) {
               auto dat = pub.serialize();
@@ -142,14 +142,16 @@ namespace graphene {
       }
 
    address::address( const fc::ecc::public_key_point_data  pub, AddressType type){
-       address_type = type;
        
+       FC_ASSERT(AddressType::ETH == type, "only implementaion for AddressType::ETH");
+
        if ( AddressType::ETH == type) {
            
            auto h =dev::sha3(dev::bytesConstRef((unsigned char *)pub.data+1,64));
            memcpy(addr.data(), (unsigned char *)h.data() + 12, 20);
            
        }
+       
        
    }
    address::address( const pts_address& ptsaddr )
@@ -180,10 +182,10 @@ namespace graphene {
 
    }
 
-   std::string address::to_string(){
+   std::string address::to_string(AddressType address_type){
 
        if (address_type == AddressType::ETH) {
-           return fc::to_hex(addr.data(),addr.data_size() );
+           return fc::to_hex(addr.data(), addr.data_size() );
        }
        else if (address_type == AddressType::BTC) {
            

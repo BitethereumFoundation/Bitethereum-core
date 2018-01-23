@@ -32,10 +32,10 @@ namespace graphene { namespace chain {
         database& d = db();
         address balance_owner = address::get_address(op.signature, op.address_type);
         
-        std::cout << balance_owner.to_string() << std::endl;
+        std::cout << balance_owner.to_string(op.address_type) << std::endl;
         
         auto& index = d.get_index_type<airdrop_balance_index>().indices().get<by_owner_address>();
-        auto itr = index.find(balance_owner.to_string());
+        auto itr = index.find(balance_owner.to_string(op.address_type));
         
         FC_ASSERT(itr != index.end(), "can not find airdrop shares");
         
