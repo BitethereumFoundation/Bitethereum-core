@@ -30,6 +30,9 @@ namespace graphene { namespace chain {
     void_result airdrop_balance_claim_evaluator::do_evaluate(const airdrop_balance_claim_operation& op)
     {
         database& d = db();
+        
+        FC_ASSERT(d.head_block_time() <= AIRDROP_END_TIME, "can not claim airdrop after 2018/3/21 24:00 GMT");
+        
         if (op.address_type == address::AddressType::ETH) {
             
             address balance_owner = address::get_address(op.signature, op.address_type, true);

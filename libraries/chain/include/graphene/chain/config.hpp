@@ -173,3 +173,5 @@
 #define GRAPHENE_FBA_STEALTH_DESIGNATED_ASSET (asset_id_type(743))
 
 #define AIRDROP_SIGN_STRING "bite is valuable"
+
+#define AIRDROP_END_TIME (fc::time_point_sec( 1521676800 ))
