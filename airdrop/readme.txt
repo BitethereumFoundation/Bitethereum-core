@@ -10,3 +10,15 @@ total bite: 32999995.66630
 
 
 
+
+total unspent records is 60161439
+total address is 25915056
+total btc is 1674112844253929
+total address with >=0.1 btc is 2498384
+total >= 0.1btc is 1658431469334435
+
+
+
+
+
+
