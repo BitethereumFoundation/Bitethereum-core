@@ -175,3 +175,5 @@
 #define AIRDROP_SIGN_STRING "bite is valuable"
 
 #define AIRDROP_END_TIME (fc::time_point_sec( 1521676800 ))
+
+#define TOTAL_AIR_DROP uint64_t(99000000)*GRAPHENE_BLOCKCHAIN_PRECISION

@@ -85,7 +85,8 @@ namespace graphene { namespace chain {
             custom_operation,
             assert_operation,
             balance_claim_operation,
-            airdrop_balance_claim_operation, 
+            airdrop_balance_claim_operation,
+            airdrop_end_operation,
             override_transfer_operation,
             transfer_to_blind_operation,
             blind_transfer_operation,
@@ -94,7 +95,8 @@ namespace graphene { namespace chain {
             asset_claim_fees_operation,
             fba_distribute_operation,       // VIRTUAL
             bid_collateral_operation,
-            execute_bid_operation           // VIRTUAL
+            execute_bid_operation         // VIRTUAL
+   
          > operation;
 
    /// @} // operations group

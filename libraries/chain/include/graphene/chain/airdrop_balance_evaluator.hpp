@@ -46,5 +46,20 @@ public:
      */
     void_result do_apply(const airdrop_balance_claim_operation& op);
 };
+   
+class airdrop_end_evaluator : public evaluator<airdrop_end_evaluator>
+{
+public:
+   typedef airdrop_end_operation operation_type;
+   
+   
+   void_result do_evaluate(const airdrop_end_operation& op);
+   
+   /**
+    * @note the fee is always 0 for this particular operation because once the
+    * balance is claimed it frees up memory and it cannot be used to spam the network
+    */
+   void_result do_apply(const airdrop_end_operation& op);
+};
 
 } } // graphene::chain

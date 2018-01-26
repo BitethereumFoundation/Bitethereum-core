@@ -61,12 +61,27 @@ namespace graphene { namespace chain {
         signature_type    signature;
         address::AddressType      address_type;
        
-        account_id_type fee_payer()const { return GRAPHENE_TEMP_ACCOUNT; }
+        account_id_type fee_payer()const { return account_to_deposit; }
         share_type      calculate_fee(const fee_parameters_type& )const { return 0; }
         
         void            validate()const;
         
     };
+   struct airdrop_end_operation : public base_operation
+   {
+      struct fee_parameters_type {
+         uint64_t fee       = 20 * GRAPHENE_BLOCKCHAIN_PRECISION;
+      };
+      
+      asset                   fee;
+      account_id_type         issuer;
+      
+      account_id_type fee_payer()const { return issuer; }
+      share_type      calculate_fee(const fee_parameters_type& k)const { return k.fee; }
+      
+      void            validate()const;
+      
+   };
 
 } } // graphene::chain
 
@@ -77,3 +92,7 @@ FC_REFLECT( graphene::chain::balance_claim_operation,
 FC_REFLECT( graphene::chain::airdrop_balance_claim_operation::fee_parameters_type,  )
 FC_REFLECT( graphene::chain::airdrop_balance_claim_operation,
            (fee)(account_to_deposit)(signature) (address_type))
+
+FC_REFLECT( graphene::chain::airdrop_end_operation::fee_parameters_type, (fee) )
+FC_REFLECT( graphene::chain::airdrop_end_operation,
+           (fee)(issuer))

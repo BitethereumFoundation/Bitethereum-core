@@ -171,7 +171,8 @@ struct get_impacted_account_visitor
    void operator()( const custom_operation& op ) {}
    void operator()( const assert_operation& op ) {}
    void operator()( const balance_claim_operation& op ) {}
-   void operator()( const airdrop_balance_claim_operation& op ) {}
+   void operator()( const airdrop_balance_claim_operation& op ) {_impacted.insert(op.account_to_deposit);}
+   void operator()( const airdrop_end_operation& op ) {_impacted.insert(op.issuer);}
 
    void operator()( const override_transfer_operation& op )
    {

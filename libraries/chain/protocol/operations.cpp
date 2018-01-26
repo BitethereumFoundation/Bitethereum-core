@@ -42,6 +42,11 @@ void airdrop_balance_claim_operation::validate()const
 {
     FC_ASSERT( fee == asset() );
 }
+void airdrop_end_operation::validate()const
+{
+   FC_ASSERT( fee == asset() );
+}
+
 
 /**
  * @brief Used to validate operations in a polymorphic manner

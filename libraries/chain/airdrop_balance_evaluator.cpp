@@ -84,10 +84,33 @@ namespace graphene { namespace chain {
         database& d = db();
 
         d.remove(*airdrop_object);
-        
-        d.adjust_balance(op.account_to_deposit, airdrop_object->balance);
        
+        asset delta=airdrop_object->balance;
+        d.adjust_balance(op.account_to_deposit,delta );
+        const auto& dynamic_properties = d.get_dynamic_global_properties();
+        d.modify(dynamic_properties, [&](dynamic_global_property_object& p) {
+           p.total_air_drop_claim+=delta.amount;
+        });
         return {};
     }
-    
+   void_result airdrop_end_evaluator::do_evaluate(const airdrop_end_operation& op)
+   {
+      database& d = db();
+      
+      FC_ASSERT(d.head_block_time() > AIRDROP_END_TIME, "can not end airdrop before 2018/3/21 24:00 GMT");
+      return {};
+   }
+   void_result airdrop_end_evaluator::do_apply(const airdrop_end_operation& op)
+   {
+      database& d = db();
+      
+      const asset_dynamic_data_object& core =asset_id_type(0)(d).dynamic_asset_data_id(d);
+      const share_type total_air_drop_unclaim=share_type(TOTAL_AIR_DROP)-d.get_dynamic_global_properties().total_air_drop_claim;
+      
+      d.modify(core, [&]( asset_dynamic_data_object& _core ){
+            _core.current_supply -=total_air_drop_unclaim;
+      });
+      return {};
+   }
+   
 } } // namespace graphene::chain
