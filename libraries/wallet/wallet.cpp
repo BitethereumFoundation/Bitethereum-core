@@ -713,6 +713,9 @@ public:
    signed_transaction import_airdrop_balance( string name_or_id, const string signature, const address::AddressType type, bool broadcast );
     
     airdrop_balance_object get_airdrop_balance_object(string owner);
+    
+    
+    signed_transaction end_airdrop(string issuer, bool broadcast );
 
    bool load_wallet_file(string wallet_filename = "")
    {
@@ -3699,9 +3702,13 @@ signed_transaction wallet_api::import_airdrop_balance( string name_or_id, const 
     return my->import_airdrop_balance(name_or_id, signature, type, broadcast);
 }
     
-    airdrop_balance_object wallet_api::get_airdrop_balance_object(string owner) {
-        return my->get_airdrop_balance_object(owner);
-    }
+airdrop_balance_object wallet_api::get_airdrop_balance_object(string owner) {
+    return my->get_airdrop_balance_object(owner);
+}
+    
+signed_transaction wallet_api::end_airdrop(string issuer, bool broadcast) {
+    return my->end_airdrop(issuer, broadcast);
+}
 
 namespace detail {
 
@@ -3822,9 +3829,29 @@ vector< signed_transaction > wallet_api_impl::import_balance( string name_or_id,
 } FC_CAPTURE_AND_RETHROW( (name_or_id) ) }
     
     
-    airdrop_balance_object wallet_api_impl::get_airdrop_balance_object(string o) {
-        return _remote_db->get_airdrop_balance_object(o);
-    }
+airdrop_balance_object wallet_api_impl::get_airdrop_balance_object(string o) {
+    return _remote_db->get_airdrop_balance_object(o);
+}
+    
+signed_transaction wallet_api_impl::end_airdrop(string issuer, bool b)
+{ try {
+    FC_ASSERT(!is_locked());
+    
+    account_object issuer_account = get_account( issuer );
+    
+    signed_transaction tx;
+    
+    airdrop_end_operation op;
+    
+    op.issuer = issuer_account.id;
+    
+    tx.operations.push_back( op );
+    set_operation_fees( tx, _remote_db->get_global_properties().parameters.current_fees);
+    
+    return sign_transaction(tx, b);
+    
+} FC_CAPTURE_AND_RETHROW( (issuer) ) }
+    
     
 signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, const string signature, const address::AddressType address_type, bool broadcast )
 { try {
@@ -3867,6 +3894,10 @@ signed_transaction wallet_api_impl::import_airdrop_balance( string name_or_id, c
     
     return sign_transaction( tx, broadcast );
 } FC_CAPTURE_AND_RETHROW( (name_or_id) ) }
+    
+
+
+    
 
 }
 
