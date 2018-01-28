@@ -174,6 +174,7 @@ void database::initialize_evaluators()
    register_evaluator<blind_transfer_evaluator>();
    register_evaluator<asset_claim_fees_evaluator>();
    register_evaluator<airdrop_balance_claim_evaluator>();
+   register_evaluator<airdrop_end_evaluator>();
 }
 
 void database::initialize_indexes()
