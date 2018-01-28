@@ -44,7 +44,7 @@ void airdrop_balance_claim_operation::validate()const
 }
 void airdrop_end_operation::validate()const
 {
-   FC_ASSERT( fee == asset() );
+   FC_ASSERT( fee.amount >= 0 );
 }
 
 

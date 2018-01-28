@@ -85,11 +85,12 @@ namespace graphene { namespace chain {
 
         d.remove(*airdrop_object);
        
-        asset delta=airdrop_object->balance;
-        d.adjust_balance(op.account_to_deposit,delta );
+        asset delta = airdrop_object->balance;
+        d.adjust_balance(op.account_to_deposit, delta );
+        
         const auto& dynamic_properties = d.get_dynamic_global_properties();
         d.modify(dynamic_properties, [&](dynamic_global_property_object& p) {
-           p.total_air_drop_claim+=delta.amount;
+           p.total_airdrop_claim += delta.amount;
         });
         return {};
     }
@@ -97,19 +98,46 @@ namespace graphene { namespace chain {
    {
       database& d = db();
       
-      FC_ASSERT(d.head_block_time() > AIRDROP_END_TIME, "can not end airdrop before 2018/3/21 24:00 GMT");
+       auto t = d.head_block_time();
+      FC_ASSERT(t > AIRDROP_END_TIME, "can not end airdrop before 2018/3/21 24:00 GMT");
+       
+       auto end_time = d.get_dynamic_global_properties().airdrop_end_time;
+       FC_ASSERT(end_time == time_point_sec(0), "can not end airdrop again");
+       
       return {};
    }
    void_result airdrop_end_evaluator::do_apply(const airdrop_end_operation& op)
    {
       database& d = db();
       
-      const asset_dynamic_data_object& core =asset_id_type(0)(d).dynamic_asset_data_id(d);
-      const share_type total_air_drop_unclaim=share_type(TOTAL_AIR_DROP)-d.get_dynamic_global_properties().total_air_drop_claim;
-      
-      d.modify(core, [&]( asset_dynamic_data_object& _core ){
-            _core.current_supply -=total_air_drop_unclaim;
-      });
+      const asset_dynamic_data_object& core = asset_id_type(0)(d).dynamic_asset_data_id(d);
+      const share_type total_airdrop_unclaim  =share_type(TOTAL_AIR_DROP)-d.get_dynamic_global_properties().total_airdrop_claim;
+       
+       
+       if (total_airdrop_unclaim > share_type(TOTAL_MINING_AMOUNT)) {
+           asset delta = asset(total_airdrop_unclaim - share_type(TOTAL_MINING_AMOUNT), asset_id_type());
+           d.adjust_balance( GRAPHENE_DEV_ACCOUNT,  delta); // .TBD
+           
+           d.modify(core, [&]( asset_dynamic_data_object& _core ){
+               _core.current_supply -= share_type(TOTAL_MINING_AMOUNT);
+           });
+           
+       }else {
+           
+           asset delta = asset(total_airdrop_unclaim / 2 , asset_id_type());
+           d.adjust_balance( GRAPHENE_DEV_ACCOUNT,  delta); // .TBD
+           
+           d.modify(core, [&]( asset_dynamic_data_object& _core ){
+               _core.current_supply -= total_airdrop_unclaim / 2 ;
+           });
+       }
+       
+       
+       const auto& dynamic_properties = d.get_dynamic_global_properties();
+       d.modify(dynamic_properties, [&](dynamic_global_property_object& p) {
+           p.airdrop_end_time = d.head_block_time();
+       });
+
       return {};
    }
    

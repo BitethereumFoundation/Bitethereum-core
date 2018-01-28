@@ -107,7 +107,8 @@ namespace graphene { namespace chain {
          uint32_t dynamic_flags = 0;
 
          uint32_t last_irreversible_block_num = 0;
-         share_type total_air_drop_claim = 0;
+         share_type total_airdrop_claim = 0;
+         time_point_sec airdrop_end_time = time_point_sec(0);
 
          enum dynamic_flag_bits
          {
@@ -139,7 +140,8 @@ FC_REFLECT_DERIVED( graphene::chain::dynamic_global_property_object, (graphene::
                     (recent_slots_filled)
                     (dynamic_flags)
                     (last_irreversible_block_num)
-                    (total_air_drop_claim)
+                    (total_airdrop_claim)
+                   (airdrop_end_time)
                   )
 
 FC_REFLECT_DERIVED( graphene::chain::global_property_object, (graphene::db::object),
