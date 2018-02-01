@@ -303,6 +303,11 @@ flat_set<public_key_type> signed_transaction::get_signature_keys( const chain_id
    flat_set<public_key_type> result;
    for( const auto&  sig : signatures )
    {
+       
+       auto pubkey = fc::ecc::public_key(sig,d);
+       address addr(pubkey);
+       std::cout << "recovered pub:" << pubkey.to_base58()<< std::endl;
+       
       GRAPHENE_ASSERT(
          result.insert( fc::ecc::public_key(sig,d) ).second,
          tx_duplicate_sig,
