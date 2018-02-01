@@ -27,6 +27,7 @@
 #include <fc/bitutil.hpp>
 #include <fc/smart_ref_impl.hpp>
 #include <algorithm>
+#include <fc/crypto/hex.hpp>
 
 namespace graphene { namespace chain {
 
@@ -297,12 +298,17 @@ void verify_authority( const vector<operation>& ops, const flat_set<public_key_t
 } FC_CAPTURE_AND_RETHROW( (ops)(sigs) ) }
 
 
+    
 flat_set<public_key_type> signed_transaction::get_signature_keys( const chain_id_type& chain_id )const
 { try {
    auto d = sig_digest( chain_id );
    flat_set<public_key_type> result;
    for( const auto&  sig : signatures )
    {
+       
+       std::cout << "digest: "<< d.str()<< std::endl;
+       std::cout << "sig: " << fc::to_hex((const char* )sig.begin(), sig.size()) << std::endl;
+       
        
        auto pubkey = fc::ecc::public_key(sig,d);
        address addr(pubkey);
