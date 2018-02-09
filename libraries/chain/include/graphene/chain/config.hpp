@@ -180,6 +180,6 @@
 #define TOTAL_MINING_AMOUNT uint64_t(50000000)*GRAPHENE_BLOCKCHAIN_PRECISION
 
 // dev account , TBD
-#define GRAPHENE_DEV_ACCOUNT (graphene::chain::account_id_type(666666))
+#define GRAPHENE_DEV_ACCOUNT (graphene::chain::account_id_type(6))
 
 
