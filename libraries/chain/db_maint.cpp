@@ -200,7 +200,9 @@ void database::update_active_witnesses()
    }
 
    const chain_property_object& cpo = get_chain_properties();
-   auto wits = sort_votable_objects<witness_index>(std::max(witness_count*2+1, (size_t)cpo.immutable_parameters.min_witness_count));
+   
+   size_t witness_amount = get_global_properties().parameters.witness_amount;
+   auto wits = sort_votable_objects<witness_index>(std::max(witness_count, (size_t)cpo.immutable_parameters.min_witness_count));
 
    const global_property_object& gpo = get_global_properties();
 
@@ -300,7 +302,8 @@ void database::update_active_committee_members()
    }
 
    const chain_property_object& cpo = get_chain_properties();
-   auto committee_members = sort_votable_objects<committee_member_index>(std::max(committee_member_count*2+1, (size_t)cpo.immutable_parameters.min_committee_member_count));
+   size_t committee_member_amount = get_global_properties().parameters.committee_member_amount;
+   auto committee_members = sort_votable_objects<committee_member_index>(std::max(committee_member_amount, (size_t)cpo.immutable_parameters.min_committee_member_count));
 
    for( const committee_member_object& del : committee_members )
    {

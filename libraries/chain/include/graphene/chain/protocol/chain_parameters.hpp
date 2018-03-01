@@ -70,6 +70,8 @@ namespace graphene { namespace chain {
       uint8_t                 account_fee_scale_bitshifts         = GRAPHENE_DEFAULT_ACCOUNT_FEE_SCALE_BITSHIFTS; ///< number of times to left bitshift account registration fee at each scaling
       uint8_t                 max_authority_depth                 = GRAPHENE_MAX_SIG_CHECK_DEPTH;
       uint16_t                max_vote_effect_times               = GRAPHENE_MAX_VOTE_EFFECT_TIMES;
+      uint16_t                witness_amount                      = 7;
+      uint16_t                committee_member_amount             = 7;
       extensions_type         extensions;
 
       /** defined in fee_schedule.cpp */
