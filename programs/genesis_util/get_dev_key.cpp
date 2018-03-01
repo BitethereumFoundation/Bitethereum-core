@@ -31,6 +31,8 @@
 #include <graphene/chain/protocol/address.hpp>
 #include <graphene/chain/protocol/types.hpp>
 #include <graphene/utilities/key_conversion.hpp>
+#include <boost/random/random_device.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
 #ifndef WIN32
 #include <csignal>
@@ -50,75 +52,60 @@ int main( int argc, char** argv )
       {
          dev_key_prefix = argv[1];
          if(  (dev_key_prefix == "-h")
-           || (dev_key_prefix == "--help")
-           )
-           need_help = true;
+            || (dev_key_prefix == "--help")
+            )
+            need_help = true;
       }
-
-      if( need_help )
-      {
-         std::cerr << argc << " " << argv[1]  << "\n";
-         std::cerr << "get-dev-key <prefix> <suffix> ...\n"
-             "\n"
-             "example:\n"
-             "\n"
-             "get-dev-key wxyz- owner-5 active-7 balance-9 wit-block-signing-3 wit-owner-5 wit-active-33\n"
-             "get-dev-key wxyz- wit-block-signing-0:101\n"
-             "\n";
-         return 1;
-      }
-
+            
       bool comma = false;
-
+      
       auto show_key = [&]( const fc::ecc::private_key& priv_key )
       {
          fc::mutable_variant_object mvo;
          graphene::chain::public_key_type pub_key = priv_key.get_public_key();
          mvo( "private_key", graphene::utilities::key_to_wif( priv_key ) )
-            ( "public_key", std::string( pub_key ) )
-            ( "address", graphene::chain::address( pub_key ) )
-            ;
+         ( "public_key", std::string( pub_key ) )
+         ( "address", graphene::chain::address( pub_key ) )
+         ;
          if( comma )
             std::cout << ",\n";
          std::cout << fc::json::to_string( mvo );
          comma = true;
       };
-
+      
       std::cout << "[";
-
-      for( int i=2; i<argc; i++ )
+      
+      string salt;
+      uint32_t n;
+      cout<<"slat:";
+      cin>>salt;
+      cout<<"n:";
+      cin>>n;
+      
+      vector< fc::ecc::private_key > keys;
+      
+      fc::sha256 saltHash=fc::sha256::hash(salt);
+      for( int i=0; i<n; i++ )
       {
-         std::string arg = argv[i];
-         std::string prefix;
-         int lep = -1, rep;
-         auto dash_pos = arg.rfind('-');
-         if( dash_pos != string::npos )
+         fc::sha256 randomHash;
+         boost::random_device random_device;
+         for(uint i=0;i<4;i++)
          {
-            std::string lhs = arg.substr( 0, dash_pos+1 );
-            std::string rhs = arg.substr( dash_pos+1 );
-            auto colon_pos = rhs.find(':');
-            if( colon_pos != string::npos )
-            {
-               prefix = lhs;
-               lep = std::stoi( rhs.substr( 0, colon_pos ) );
-               rep = std::stoi( rhs.substr( colon_pos+1 ) );
-            }
+            for(uint j=0;j<8;j++)
+               if(j)
+                  randomHash._hash[i]=randomHash._hash[i]<<8;
+            randomHash._hash[i]+= (uint8_t)boost::random::uniform_int_distribution<uint16_t>(0, 255)(random_device);
+            
          }
-         vector< fc::ecc::private_key > keys;
-         if( lep >= 0 )
-         {
-            for( int k=lep; k<rep; k++ )
-            {
-               std::string s = dev_key_prefix + prefix + std::to_string(k);
-               show_key( fc::ecc::private_key::regenerate( fc::sha256::hash( s ) ) );
-            }
-         }
-         else
-         {
-            show_key( fc::ecc::private_key::regenerate( fc::sha256::hash( dev_key_prefix + arg ) ) );
-         }
+         
+         fc::sha256 serect =fc::sha256::hash(randomHash.str()+saltHash.str());
+         
+         keys.push_back( fc::ecc::private_key::regenerate( serect));
+         
       }
-      std::cout << "]\n";
+      for(const auto &key:keys)
+         show_key(key);
+      std::cout << "\n";
    }
    catch ( const fc::exception& e )
    {
