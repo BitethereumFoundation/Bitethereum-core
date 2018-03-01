@@ -174,10 +174,10 @@
 
 #define AIRDROP_SIGN_STRING "bite is valuable"
 
-#define AIRDROP_END_TIME (fc::time_point_sec( 1521676800 ))
+#define AIRDROP_END_TIME (fc::time_point_sec( 1522540800 ))
 
 #define TOTAL_AIR_DROP uint64_t(99000000)*GRAPHENE_BLOCKCHAIN_PRECISION
-#define TOTAL_MINING_AMOUNT uint64_t(50000000)*GRAPHENE_BLOCKCHAIN_PRECISION
+#define TOTAL_MINING_AMOUNT uint64_t(10500000)*GRAPHENE_BLOCKCHAIN_PRECISION
 
 // dev account , TBD
 #define GRAPHENE_DEV_ACCOUNT (graphene::chain::account_id_type(6))
